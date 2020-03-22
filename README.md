@@ -1,6 +1,6 @@
 # blender-qle
 
-A basic Quick Lighting Environment for Blender.
+Add a basic Quick Lighting Environment to your Blender scene.
 
 ![Blender QLE Screenshot](https://github.com/don1138/blender-qle/blob/master/blender-qle.jpg)
 
