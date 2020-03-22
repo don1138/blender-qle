@@ -1,6 +1,8 @@
 # blender-qle
 
-A quick, basic lighting environment for Blender.
+A basic Quick Lighting Environment for Blender.
+
+[Screenshot](https://github.com/don1138/blender-qle/blob/master/blender-qle.jpg)
 
 ## Installation
 
@@ -16,4 +18,8 @@ Click **Clear Environment** to deleta ALL Lights and Empties in your scene.
 
 ## Version History
 
-**1.1** – Enable nodes on all lights, and add Blackbody Converter set to 5000 (daylight-ish) to Emission Shaders.
+**1.1** – Enable nodes on all lights, and add Blackbody Converter set to 5000 (daylight-ish) to Emission Shaders
+
+## Version Path
+
+**1.2** – Move lights and empty to a new Collection
