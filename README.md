@@ -18,7 +18,7 @@ Click **Clear Environment** to deleta ALL Lights and Empties in your scene, and 
 
 ## Version History
 
-**1.1** – Enable nodes on all Lights, and add Blackbody Converter set to 5000 (daylight-ish) to Emission Shaders
+**1.1** – Enable nodes on all Lights, and add Blackbody Converter set to ``5000`` (daylight-ish) to Emission Shaders
 
 ## Version Path
 
