@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Quick Lighting Environment",
     "author": "Don Schnitzius",
-    "version": (1, 1),
+    "version": (1, 2),
     "blender": (2, 80, 0),
     "location": "Scene",
     "description": "Adds Three Area Lights and Sets World Surface to Black",
@@ -12,6 +12,10 @@ bl_info = {
 
 """
 VERSION HISTORY
+
+1.2 – 20/06/17
+    – Add Icons to Buttons
+    – Refactor Register/Unregister
 
 1.1 – 20/03/21
     – Add Blackbody to Lights
@@ -147,12 +151,13 @@ class LayoutLightsPanel(bpy.types.Panel):
         # Big render button
         row = layout.row()
         row.scale_y = 1.5
-        row.operator("dms.add_lights")
+        row.operator(AddLights.bl_idname, icon='ADD')
+
 
         # Big render button
         row = layout.row()
         row.scale_y = 1.5
-        row.operator("dms.clear_lights")
+        row.operator(ClearLights.bl_idname, icon='REMOVE')
 
         # ALTERNATE BUTTON LAYOUT
 #        layout.label(text="Simple Studio Lights:")
@@ -161,17 +166,21 @@ class LayoutLightsPanel(bpy.types.Panel):
 #        row.operator("dms.clear_lights")
 
 
-def register():
-    bpy.utils.register_class(AddLights)
-    bpy.utils.register_class(ClearLights)
-    bpy.utils.register_class(LayoutLightsPanel)
+from bpy.utils import register_class, unregister_class
 
+_classes = [
+    AddLights,
+    ClearLights,
+    LayoutLightsPanel
+]
+
+def register():
+    for cls in _classes:
+        register_class(cls)
 
 def unregister():
-    bpy.utils.unregister_class(AddLights)
-    bpy.utils.unregister_class(ClearLights)
-    bpy.utils.unregister_class(LayoutLightsPanel)
-
+    for cls in _classes:
+        unregister_class(cls)
 
 if __name__ == "__main__":
     register()
