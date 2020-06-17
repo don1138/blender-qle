@@ -20,6 +20,8 @@ Click **Clear Environment** to delete ALL Lights and Empties in your scene, and 
 
 **1.1** – Enable nodes on all Lights, and add Blackbody Converter set to ``5000`` (daylight-ish) to Emission Shaders
 
+**1.2** – Add icons to Buttons, and refactor Register/Unregister
+
 ## Version Path
 
-**1.2** – Move Lights and Empty into a new Collection
+**1.3** – Move Lights and Empty into a new Collection
