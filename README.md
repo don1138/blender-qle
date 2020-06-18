@@ -10,11 +10,13 @@ Download `quick_environment.py` and install addon.
 
 ## Usage
 
-This addon installs a new panel named **Add Quick Environment** under ``Properties > Scene``.
+This addon installs a new panel named **QLE (Quick Lighting Environment)** under ``Properties > Scene``.
 
 Click **Add Environement** to set the ``World > Surface`` strength to ``0`` (black), and create three positioned Area Lights. This will also create an Empty named ``Lights_Target`` that is connected to all lights with a ``Track To`` Object Constraint.
 
-Click **Clear Environment** to delete ALL Lights and Empties in your scene, and set the ``World > Surface`` strength back to ``1``.
+Click **Clear Environment** to delete QLE Lights and Empty from scene, and set the ``World > Surface`` strength back to ``1``.
+
+Click **Clear All Lights & Empties** to delete ALL Lights and Empties from Scene. This is a temp fix while I figure out Error Handling for clicking Add Environment multple times, or Clear Environment when there is no QLE in Scene.
 
 ## Version History
 
@@ -22,6 +24,8 @@ Click **Clear Environment** to delete ALL Lights and Empties in your scene, and 
 
 **1.2** – Add icons to Buttons, and refactor Register/Unregister
 
+**1.3** – Move Lights and Empty into new Collection, refactor Clear Environment, and add "Clear All Lights & Empties" as temp fix for Error Handling
+
 ## Version Path
 
-**1.3** – Move Lights and Empty into a new Collection
+**1.4** – Error handling for clicking Add Environment multple times, or Clear Environment when there is no QLE in Scene.
