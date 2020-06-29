@@ -16,8 +16,6 @@ Click **Add Environement** to set the ``World > Surface`` strength to ``0`` (bla
 
 Click **Clear Environment** to delete QLE Lights and Empty from scene, and set the ``World > Surface`` strength back to ``1``.
 
-Click **Clear All Lights & Empties** to delete ALL Lights and Empties from Scene. This is a temp fix while I figure out Error Handling for clicking Add Environment multple times, or Clear Environment when there is no QLE in Scene.
-
 ## Version History
 
 **1.1** – Enable nodes on all Lights, and add Blackbody Converter set to ``5000`` (daylight-ish) to Emission Shaders
@@ -26,4 +24,8 @@ Click **Clear All Lights & Empties** to delete ALL Lights and Empties from Scene
 
 **1.3** – Move Lights and Empty into new Collection, refactor Clear Environment, and add "Clear All Lights & Empties" as temp fix for Error Handling
 
-**1.4** – Error handling for clicking Add Environment multple times, or Clear Environment when there is no QLE in Scene.
+**1.4** – Error handling for clicking Add Environment multple times, or Clear Environment when there is no QLE in Scene. Removed **Clear All** button.
+
+## Version Path
+
+**1.5** – Fix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection.

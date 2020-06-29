@@ -1,7 +1,7 @@
 bl_info = {
     "name": "QLE (Quick Lighting Environment)",
     "author": "Don Schnitzius",
-    "version": (1, 4),
+    "version": (1, 4, 1),
     "blender": (2, 80, 0),
     "location": "Scene",
     "description": "Adds Three Area Lights and Sets World Surface to Black",
@@ -14,7 +14,9 @@ bl_info = {
 VERSION HISTORY
 
 1.4 – 20/06/29
-    – Error handling for clicking Add Environment multple times, or Clear Environment when there is no QLE in Scene.
+    – Error handling for:
+        – Clicking Add Environment multple times
+        – Clicking Clear Environment when there is no QLE in Scene
 
 1.3 – 20/06/17
     – Move QLE to New Collection
@@ -57,80 +59,94 @@ def btn_01(context):
 
     bpy.data.worlds["World"].node_tree.nodes["Background"].inputs[1].default_value = 0
 
-    bpy.ops.object.empty_add(type='PLAIN_AXES', location=(0, 0, 1))
-    bpy.context.active_object.name = "Lights_Target"
+
+    try:
+        bpy.data.objects["Lights_Target"]
+    except:
+        bpy.ops.object.empty_add(type='PLAIN_AXES', location=(0, 0, 1))
+        bpy.context.active_object.name = "Lights_Target"
+
 
 #    ADD AREA LIGHT RIGHT
-    bpy.ops.object.light_add(type='AREA', radius=10, location=(5, 1.5, 5))
-    bpy.context.active_object.data.use_nodes = True
-    bpy.context.active_object.name = "Area_Right"
-    bpy.context.active_object.data.shape = 'RECTANGLE'
-    bpy.context.active_object.data.energy = 300
-    bpy.context.active_object.data.size = 1
-    bpy.context.active_object.data.size_y = 3
-    bpy.ops.object.constraint_add(type='TRACK_TO')
-    bpy.context.active_object.constraints["Track To"].track_axis = 'TRACK_NEGATIVE_Z'
-    bpy.context.active_object.constraints["Track To"].up_axis = 'UP_Y'
-    bpy.context.active_object.constraints["Track To"].target = bpy.data.objects["Lights_Target"]
+    try:
+        bpy.data.objects["Area_Right"]
+    except:
+        bpy.ops.object.light_add(type='AREA', radius=10, location=(5, 1.5, 5))
+        bpy.context.active_object.data.use_nodes = True
+        bpy.context.active_object.name = "Area_Right"
+        bpy.context.active_object.data.shape = 'RECTANGLE'
+        bpy.context.active_object.data.energy = 300
+        bpy.context.active_object.data.size = 1
+        bpy.context.active_object.data.size_y = 3
+        bpy.ops.object.constraint_add(type='TRACK_TO')
+        bpy.context.active_object.constraints["Track To"].track_axis = 'TRACK_NEGATIVE_Z'
+        bpy.context.active_object.constraints["Track To"].up_axis = 'UP_Y'
+        bpy.context.active_object.constraints["Track To"].target = bpy.data.objects["Lights_Target"]
 
 #    ADD BLACKBODY
-    light   = bpy.context.active_object.data
-    nodes   = light.node_tree.nodes
-    node_bb = nodes.new(type="ShaderNodeBlackbody")
-    node_bb.inputs[0].default_value = 5000
-    node_bb.location = -200,300
-    node_ox = nodes.get('Emission')
-    links   = light.node_tree.links
-    link    = links.new(node_bb.outputs[0], node_ox.inputs[0])
+        light   = bpy.context.active_object.data
+        nodes   = light.node_tree.nodes
+        node_bb = nodes.new(type="ShaderNodeBlackbody")
+        node_bb.inputs[0].default_value = 5000
+        node_bb.location = -200,300
+        node_ox = nodes.get('Emission')
+        links   = light.node_tree.links
+        link    = links.new(node_bb.outputs[0], node_ox.inputs[0])
 
 
 #    ADD AREA LIGHT LEFT
-    bpy.ops.object.light_add(type='AREA', radius=10, location=(-5, 1.5, 5))
-    bpy.context.active_object.data.use_nodes = True
-    bpy.context.active_object.name = "Area_Left"
-    bpy.context.active_object.data.shape = 'RECTANGLE'
-    bpy.context.active_object.data.energy = 300
-    bpy.context.active_object.data.size = 1
-    bpy.context.active_object.data.size_y = 3
-    bpy.ops.object.constraint_add(type='TRACK_TO')
-    bpy.context.active_object.constraints["Track To"].track_axis = 'TRACK_NEGATIVE_Z'
-    bpy.context.active_object.constraints["Track To"].up_axis = 'UP_Y'
-    bpy.context.active_object.constraints["Track To"].target = bpy.data.objects["Lights_Target"]
+    try:
+        bpy.data.objects["Area_Left"]
+    except:
+        bpy.ops.object.light_add(type='AREA', radius=10, location=(-5, 1.5, 5))
+        bpy.context.active_object.data.use_nodes = True
+        bpy.context.active_object.name = "Area_Left"
+        bpy.context.active_object.data.shape = 'RECTANGLE'
+        bpy.context.active_object.data.energy = 300
+        bpy.context.active_object.data.size = 1
+        bpy.context.active_object.data.size_y = 3
+        bpy.ops.object.constraint_add(type='TRACK_TO')
+        bpy.context.active_object.constraints["Track To"].track_axis = 'TRACK_NEGATIVE_Z'
+        bpy.context.active_object.constraints["Track To"].up_axis = 'UP_Y'
+        bpy.context.active_object.constraints["Track To"].target = bpy.data.objects["Lights_Target"]
 
 #    ADD BLACKBODY
-    light   = bpy.context.active_object.data
-    nodes   = light.node_tree.nodes
-    node_bb = nodes.new(type="ShaderNodeBlackbody")
-    node_bb.inputs[0].default_value = 5000
-    node_bb.location = -200,300
-    node_ox = nodes.get('Emission')
-    links   = light.node_tree.links
-    link    = links.new(node_bb.outputs[0], node_ox.inputs[0])
+        light   = bpy.context.active_object.data
+        nodes   = light.node_tree.nodes
+        node_bb = nodes.new(type="ShaderNodeBlackbody")
+        node_bb.inputs[0].default_value = 5000
+        node_bb.location = -200,300
+        node_ox = nodes.get('Emission')
+        links   = light.node_tree.links
+        link    = links.new(node_bb.outputs[0], node_ox.inputs[0])
 
 
 #    ADD AREA LIGHT FILL
-    bpy.ops.object.light_add(type='AREA', radius=10, location=(0, -5, 5))
-    bpy.context.active_object.data.use_nodes = True
-    bpy.context.active_object.name = "Area_Fill"
-    bpy.context.active_object.data.shape = 'RECTANGLE'
-    bpy.context.active_object.data.energy = 300
-    bpy.context.active_object.data.size = 6
-    bpy.context.active_object.data.size_y = 4
-    bpy.ops.object.constraint_add(type='TRACK_TO')
-    bpy.context.active_object.constraints["Track To"].track_axis = 'TRACK_NEGATIVE_Z'
-    bpy.context.active_object.constraints["Track To"].up_axis = 'UP_Y'
-    bpy.context.active_object.constraints["Track To"].target = bpy.data.objects["Lights_Target"]
+    try:
+        bpy.data.objects["Area_Fill"]
+    except:
+        bpy.ops.object.light_add(type='AREA', radius=10, location=(0, -5, 5))
+        bpy.context.active_object.data.use_nodes = True
+        bpy.context.active_object.name = "Area_Fill"
+        bpy.context.active_object.data.shape = 'RECTANGLE'
+        bpy.context.active_object.data.energy = 300
+        bpy.context.active_object.data.size = 6
+        bpy.context.active_object.data.size_y = 4
+        bpy.ops.object.constraint_add(type='TRACK_TO')
+        bpy.context.active_object.constraints["Track To"].track_axis = 'TRACK_NEGATIVE_Z'
+        bpy.context.active_object.constraints["Track To"].up_axis = 'UP_Y'
+        bpy.context.active_object.constraints["Track To"].target = bpy.data.objects["Lights_Target"]
 
 
 #    ADD BLACKBODY
-    light   = bpy.context.active_object.data
-    nodes   = light.node_tree.nodes
-    node_bb = nodes.new(type="ShaderNodeBlackbody")
-    node_bb.inputs[0].default_value = 5000
-    node_bb.location = -200,300
-    node_ox = nodes.get('Emission')
-    links   = light.node_tree.links
-    link    = links.new(node_bb.outputs[0], node_ox.inputs[0])
+        light   = bpy.context.active_object.data
+        nodes   = light.node_tree.nodes
+        node_bb = nodes.new(type="ShaderNodeBlackbody")
+        node_bb.inputs[0].default_value = 5000
+        node_bb.location = -200,300
+        node_ox = nodes.get('Emission')
+        links   = light.node_tree.links
+        link    = links.new(node_bb.outputs[0], node_ox.inputs[0])
 
 
 #    SELECT QLE OBJECTS
@@ -152,14 +168,26 @@ def btn_01(context):
     try:
         new_qle_collection.objects.link(light1)
         qle_collection.objects.unlink(light1)
+    except RuntimeError:
+        print(f"Area_Fill already in collection")
+
+    try:
         new_qle_collection.objects.link(light2)
         qle_collection.objects.unlink(light2)
+    except RuntimeError:
+        print(f"Area_Left already in collection")
+
+    try:
         new_qle_collection.objects.link(light3)
         qle_collection.objects.unlink(light3)
+    except RuntimeError:
+        print(f"Area_Right already in collection")
+
+    try:
         new_qle_collection.objects.link(target1)
         qle_collection.objects.unlink(target1)
     except RuntimeError:
-        print(f"One or more objects already in collection")
+        print(f"Lights_Target already in collection")
 
 class AddLights(bpy.types.Operator):
     """Add Lights"""
@@ -205,24 +233,24 @@ class ClearLights(bpy.types.Operator):
         return {'FINISHED'}
 
 
-def btn_03(context):
+#def btn_03(context):
 
-    bpy.ops.object.select_by_type(type='LIGHT')
-    bpy.ops.object.delete(use_global=False)
-    bpy.ops.object.select_by_type(type='EMPTY')
-    bpy.ops.object.delete(use_global=False)
-    bpy.data.worlds["World"].node_tree.nodes["Background"].inputs[1].default_value = 1
+#    bpy.ops.object.select_by_type(type='LIGHT')
+#    bpy.ops.object.delete(use_global=False)
+#    bpy.ops.object.select_by_type(type='EMPTY')
+#    bpy.ops.object.delete(use_global=False)
+#    bpy.data.worlds["World"].node_tree.nodes["Background"].inputs[1].default_value = 1
 
 
-class ClearAllLights(bpy.types.Operator):
-    """Remove Lights"""
-    bl_idname = "dms.clear_all_lights"
-    bl_label = "Clear All Lights & Empties"
+#class ClearAllLights(bpy.types.Operator):
+#    """Remove Lights"""
+#    bl_idname = "dms.clear_all_lights"
+#    bl_label = "Clear All Lights & Empties"
 
-    def execute(self, context):
-        btn_03(context)
-        return {'FINISHED'}
-
+#    def execute(self, context):
+#        btn_03(context)
+#        return {'FINISHED'}
+#
 
 class LayoutLightsPanel(bpy.types.Panel):
     """Creates a Panel in the scene context of the properties editor"""
@@ -237,20 +265,20 @@ class LayoutLightsPanel(bpy.types.Panel):
 
         scene = context.scene
 
-        # Big render button
+        # Add Environment button
         row = layout.row()
         row.scale_y = 1.5
         row.operator(AddLights.bl_idname, icon='ADD')
 
-        # Big render button
+        # Clear Environment button
         row = layout.row()
         row.scale_y = 1.5
         row.operator(ClearLights.bl_idname, icon='REMOVE')
 
         # Big render button
-        row = layout.row()
-        row.scale_y = 1.5
-        row.operator(ClearAllLights.bl_idname, icon='PANEL_CLOSE')
+#        row = layout.row()
+#        row.scale_y = 1.5
+#        row.operator(ClearAllLights.bl_idname, icon='PANEL_CLOSE')
 
         # ALTERNATE BUTTON LAYOUT
 #        layout.label(text="Simple Studio Lights:")
@@ -264,7 +292,7 @@ from bpy.utils import register_class, unregister_class
 _classes = [
     AddLights,
     ClearLights,
-    ClearAllLights,
+#    ClearAllLights,
     LayoutLightsPanel
 ]
 
