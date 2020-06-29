@@ -26,6 +26,4 @@ Click **Clear All Lights & Empties** to delete ALL Lights and Empties from Scene
 
 **1.3** – Move Lights and Empty into new Collection, refactor Clear Environment, and add "Clear All Lights & Empties" as temp fix for Error Handling
 
-## Version Path
-
 **1.4** – Error handling for clicking Add Environment multple times, or Clear Environment when there is no QLE in Scene.

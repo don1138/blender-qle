@@ -1,7 +1,7 @@
 bl_info = {
     "name": "QLE (Quick Lighting Environment)",
     "author": "Don Schnitzius",
-    "version": (1, 3),
+    "version": (1, 4),
     "blender": (2, 80, 0),
     "location": "Scene",
     "description": "Adds Three Area Lights and Sets World Surface to Black",
@@ -13,12 +13,15 @@ bl_info = {
 """
 VERSION HISTORY
 
+1.4 – 20/06/29
+    – Error handling for clicking Add Environment multple times, or Clear Environment when there is no QLE in Scene.
+
 1.3 – 20/06/17
     – Move QLE to New Collection
     – Sourced from https://devtalk.blender.org/t/what-are-the-python-codes-related-to-collection-actions-for-blender-2-8/4479/4
     – Refactor Delete QLE
     – Sourced from https://blender.stackexchange.com/questions/173867/selecting-a-specific-collection-by-name-and-then-deleting-it
-    – Add "Clear All Lights & Empties" Button (Temp fix for missing Error Handling)
+    – Add "Clear All Lights & Empties" Button (Error Handling)
 
 1.2 – 20/06/17
     – Add Icons to Buttons
@@ -146,15 +149,17 @@ def btn_01(context):
 
 
 #    MOVE TO NEW COLLECTION
-    new_qle_collection.objects.link(light1)
-    qle_collection.objects.unlink(light1)
-    new_qle_collection.objects.link(light2)
-    qle_collection.objects.unlink(light2)
-    new_qle_collection.objects.link(light3)
-    qle_collection.objects.unlink(light3)
-    new_qle_collection.objects.link(target1)
-    qle_collection.objects.unlink(target1)
-
+    try:
+        new_qle_collection.objects.link(light1)
+        qle_collection.objects.unlink(light1)
+        new_qle_collection.objects.link(light2)
+        qle_collection.objects.unlink(light2)
+        new_qle_collection.objects.link(light3)
+        qle_collection.objects.unlink(light3)
+        new_qle_collection.objects.link(target1)
+        qle_collection.objects.unlink(target1)
+    except RuntimeError:
+        print(f"One or more objects already in collection")
 
 class AddLights(bpy.types.Operator):
     """Add Lights"""
@@ -169,11 +174,14 @@ class AddLights(bpy.types.Operator):
 def btn_02(context):
 
 #    CLEAR OBJECTS
-    bpy.data.objects["Area_Fill"].select_set(True)
-    bpy.data.objects["Area_Left"].select_set(True)
-    bpy.data.objects["Area_Right"].select_set(True)
-    bpy.data.objects["Lights_Target"].select_set(True)
-    bpy.ops.object.delete(use_global=False)
+    try:
+        bpy.data.objects["Area_Fill"].select_set(True)
+        bpy.data.objects["Area_Left"].select_set(True)
+        bpy.data.objects["Area_Right"].select_set(True)
+        bpy.data.objects["Lights_Target"].select_set(True)
+        bpy.ops.object.delete(use_global=False)
+    except KeyError:
+        print(f"One or more objects don't exist")
 
 #    CLEAR COLLECTION
     col_name = 'QLE'
@@ -184,6 +192,7 @@ def btn_02(context):
 
 #    RESET WORLD SURFACE STRENGTH
     bpy.data.worlds["World"].node_tree.nodes["Background"].inputs[1].default_value = 1
+
 
 
 class ClearLights(bpy.types.Operator):
