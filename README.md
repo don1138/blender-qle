@@ -26,6 +26,8 @@ Click **Clear Environment** to delete QLE Lights and Empty from scene, and set t
 
 **1.4** – Error handling for clicking Add Environment multple times, or Clear Environment when there is no QLE in Scene. Removed **Clear All** button.
 
+**1.5** – Set Lights Blackbody to ``6000``, arrange Lights Nodes, and code cleanup.
+
 ## Version Path
 
-**1.5** – Fix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection.
+**1.6** – Fix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection.
