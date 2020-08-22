@@ -1,7 +1,7 @@
 bl_info = {
     "name": "QLE (Quick Lighting Environment)",
     "author": "Don Schnitzius",
-    "version": (1, 5, 0),
+    "version": (1, 5, 1),
     "blender": (2, 80, 0),
     "location": "Scene",
     "description": "Adds Three Area Lights and Sets World Surface to Black",
@@ -12,6 +12,9 @@ bl_info = {
 
 """
 VERSION HISTORY
+
+1.5.1 – 20/08/22
+      – Set light Blackbody to 5800 (More accurate Sun temperature)
 
 1.5 – 20/07/19
     – Code cleanup
@@ -101,7 +104,7 @@ def btn_01(context):
         node_ox.width = 180
         links   = light.node_tree.links
         node_bb = nodes.new(type="ShaderNodeBlackbody")
-        node_bb.inputs[0].default_value = 6000
+        node_bb.inputs[0].default_value = 5800
         node_bb.location = -400,0
         node_bb.width = 180
         link    = links.new(node_bb.outputs[0], node_ox.inputs[0])
@@ -135,7 +138,7 @@ def btn_01(context):
         node_ox.width = 180
         links   = light.node_tree.links
         node_bb = nodes.new(type="ShaderNodeBlackbody")
-        node_bb.inputs[0].default_value = 6000
+        node_bb.inputs[0].default_value = 5800
         node_bb.location = -400,0
         node_bb.width = 180
         link    = links.new(node_bb.outputs[0], node_ox.inputs[0])
@@ -170,7 +173,7 @@ def btn_01(context):
         node_ox.width = 180
         links   = light.node_tree.links
         node_bb = nodes.new(type="ShaderNodeBlackbody")
-        node_bb.inputs[0].default_value = 6000
+        node_bb.inputs[0].default_value = 5800
         node_bb.location = -400,0
         node_bb.width = 180
         link    = links.new(node_bb.outputs[0], node_ox.inputs[0])
