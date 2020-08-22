@@ -28,6 +28,8 @@ Click **Clear Environment** to delete QLE Lights and Empty from scene, and set t
 
 **1.5** – Set Lights Blackbody to ``6000``, arrange Lights Nodes, and code cleanup.
 
+**1.5.1** – Set light Blackbody to ``5800``, more accurate Sun temperature.
+
 ## Version Path
 
 **1.6** – Fix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection.
