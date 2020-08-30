@@ -10,7 +10,7 @@ Download the latest ZIP from **Releases**, or `quick_lighting_environment.py` fr
 
 ## Usage
 
-This addon installs a new panel named **QLE (Quick Lighting Environment)** under ``Properties > Scene``.
+This addon creates a panel named **QLE (Quick Lighting Environment)** under ``Properties > Scene``.
 
 Click **Add Environement** to set the ``World > Surface`` strength to ``0`` (black), and create three positioned Area Lights. This will also create an Empty named ``Lights_Target`` that is connected to all lights with a ``Track To`` Object Constraint.
 
