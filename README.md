@@ -30,7 +30,7 @@ Click **Clear Environment** to delete QLE Lights and Empty from scene, and set t
 
 **1.5.1** – Set light Blackbody to ``5800``, more accurate Sun temperature.
 
-**1.5.2** – Change category to ``Lighting``, rename script to ``quick_lighting_environment.py``.
+**1.5.2** – Change category to ``Lighting``, Add Wiki URL, rename script to ``quick_lighting_environment.py``.
 
 ## Version Path
 

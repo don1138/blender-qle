@@ -16,7 +16,8 @@ VERSION HISTORY
 
 1.5.2 – 20/08/30
       – Change category to Lighting
-      - Rename script to "quick_lighting_environment.py"
+      – Add Wiki URL
+      – Rename script to "quick_lighting_environment.py"
 
 1.5.1 – 20/08/22
       – Set light Blackbody to 5800 (More accurate Sun temperature)
