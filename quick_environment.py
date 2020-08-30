@@ -1,17 +1,20 @@
 bl_info = {
     "name": "QLE (Quick Lighting Environment)",
     "author": "Don Schnitzius",
-    "version": (1, 5, 1),
+    "version": (1, 5, 2),
     "blender": (2, 80, 0),
-    "location": "Scene",
+    "location": "Properties > Scene",
     "description": "Adds Three Area Lights and Sets World Surface to Black",
     "warning": "",
     "wiki_url": "",
-    "category": "Scene",
+    "category": "Lighting",
 }
 
 """
 VERSION HISTORY
+
+1.5.2 – 20/08/30
+      – Update bl_info
 
 1.5.1 – 20/08/22
       – Set light Blackbody to 5800 (More accurate Sun temperature)
