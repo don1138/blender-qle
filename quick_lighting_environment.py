@@ -1,12 +1,13 @@
 bl_info = {
     "name": "QLE (Quick Lighting Environment)",
+    "description": "Adds Three Area Lights and Sets World Surface to Black",
     "author": "Don Schnitzius",
     "version": (1, 5, 2),
     "blender": (2, 80, 0),
     "location": "Properties > Scene",
-    "description": "Adds Three Area Lights and Sets World Surface to Black",
     "warning": "",
-    "wiki_url": "",
+    "wiki_url": "https://github.com/don1138/blender-qle",
+    "support": "COMMUNITY",
     "category": "Lighting",
 }
 
