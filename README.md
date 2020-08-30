@@ -6,7 +6,7 @@ Add a basic Quick Lighting Environment to your Blender scene.
 
 ## Installation
 
-Download the latest ZIP from Releases, or `quick_lighting_environment.py` from repository, and install addon.
+Download the latest ZIP from **Releases**, or `quick_lighting_environment.py` from repository, and install addon.
 
 ## Usage
 
