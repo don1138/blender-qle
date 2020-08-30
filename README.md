@@ -30,7 +30,7 @@ Click **Clear Environment** to delete QLE Lights and Empty from scene, and set t
 
 **1.5.1** – Set light Blackbody to ``5800``, more accurate Sun temperature.
 
-**1.5.2** – Reassign category from Scene to Lighting.
+**1.5.2** – Reassign category from ``Scene`` to ``Lighting``.
 
 ## Version Path
 
