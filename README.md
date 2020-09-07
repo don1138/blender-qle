@@ -4,7 +4,7 @@
   <img align="center" src="https://badges.pufler.dev/commits/monthly/blender-qle?style=for-the-badge&colorA=222&colorB=62579d" alt="Repo Monthly Commits">
 </p>
 
-# blender-qle
+# Blender QLE
 
 Add a basic Quick Lighting Environment to your Blender scene.
 
