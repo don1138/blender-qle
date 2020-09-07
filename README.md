@@ -41,5 +41,5 @@ Click **Clear Environment** to delete QLE Lights and Empty from scene, and set t
 <p align="center">
   <img align="center" src="https://badges.pufler.dev/created/don1138/blender-qle?style=for-the-badge&colorA=222&colorB=48684b" alt="Repo Created">
   <img align="center" src="https://badges.pufler.dev/updated/don1138/blender-qle?style=for-the-badge&colorA=222&colorB=48684b" alt="Repo Updated">
-  <img align="center" src="https://badges.pufler.dev/commits/monthly/blender-qle?style=for-the-badge&colorA=222&colorB=48684b" alt="Repo Monthly Commits">
+  <img align="center" src="https://badges.pufler.dev/commits/monthly/don1138?style=for-the-badge&colorA=222&colorB=48684b" alt="Repo Monthly Commits">
 </p>
