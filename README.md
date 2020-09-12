@@ -32,6 +32,8 @@ Click **Clear Environment** to delete QLE Lights and Empty from scene, and set t
 
 **1.5.2** – Change category to ``Lighting``, add Wiki URL, rename script to ``quick_lighting_environment.py``.
 
+**1.5.3** – Clear Environment: Deselect All before deleting QLE, Purge Scene after.
+
 ## Version Path
 
 **1.6** – Fix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection.

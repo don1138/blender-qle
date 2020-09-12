@@ -2,7 +2,7 @@ bl_info = {
     "name": "QLE (Quick Lighting Environment)",
     "description": "Adds Three Area Lights and Sets World Surface to Black",
     "author": "Don Schnitzius",
-    "version": (1, 5, 2),
+    "version": (1, 5, 3),
     "blender": (2, 80, 0),
     "location": "Properties > Scene",
     "warning": "",
@@ -13,6 +13,9 @@ bl_info = {
 
 """
 VERSION HISTORY
+
+1.5.3 – 20/09/12
+      – Clear Environment: Deselect All before deleting QLE, Purge Scene after
 
 1.5.2 – 20/08/30
       – Change category to Lighting
@@ -235,11 +238,13 @@ def btn_02(context):
 
 #    CLEAR OBJECTS
     try:
+        bpy.ops.object.select_all(action='DESELECT')
         bpy.data.objects["Area_Fill"].select_set(True)
         bpy.data.objects["Area_Left"].select_set(True)
         bpy.data.objects["Area_Right"].select_set(True)
         bpy.data.objects["Lights_Target"].select_set(True)
-        bpy.ops.object.delete(use_global=False)
+        bpy.ops.object.delete(use_global=True)
+
     except KeyError:
         print(f"One or more objects don't exist")
 
@@ -249,6 +254,9 @@ def btn_02(context):
         bpy.data.collections.remove(bpy.data.collections[col_name])
     except KeyError:
         print(f"The collection {col_name} doesn't exist")
+
+#    PURGE SCENE
+    bpy.ops.outliner.orphans_purge()
 
 #    RESET WORLD SURFACE STRENGTH
     bpy.data.worlds["World"].node_tree.nodes["Background"].inputs[1].default_value = 1
