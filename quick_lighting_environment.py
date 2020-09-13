@@ -54,6 +54,7 @@ VERSION HISTORY
     – Create Addon
 """
 
+
 import bpy
 
 
@@ -140,7 +141,6 @@ def btn_01(context):
         area_left.data.energy = 300
         area_left.data.size = 1
         area_left.data.size_y = 3
-        area_left.data.use_nodes = True
 #    ADD TRACKING
         add_tracking(area_left)
 #    ADD BLACKBODY
