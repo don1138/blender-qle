@@ -81,7 +81,6 @@ def add_tracking(item):
 
 
 def add_blackbody(item):
-    #    ADD BLACKBODY
         item.data.use_nodes = True
         light   = bpy.context.active_object.data
         nodes   = light.node_tree.nodes
