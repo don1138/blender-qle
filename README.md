@@ -62,7 +62,7 @@ Click **Clear Environment** to delete QLE Lights and Empty from scene, and set t
 ## Version Path
 
 **1.6**
-   + Popup to set light intensity, color and position when adding QLE. Yep, just light Tri-Lighting.
+   + Popup to set light intensity, color and position when adding QLE. Yep, just like Tri-Lighting.
 
 ***
 
