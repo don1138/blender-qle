@@ -16,7 +16,7 @@ VERSION HISTORY
 
 1.5.4 – 20/09/19
       – Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection
-      – (Turns out TRY/EXCEPT staements are bad. Who knew?)
+      – (Turns out TRY/EXCEPT statements are bad. Who knew?)
       – Add INFO message alerts for when button click returns no result
 
 1.5.3 – 20/09/12
