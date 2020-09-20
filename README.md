@@ -19,50 +19,50 @@ Click **Clear Environment** to delete QLE Lights and Empty from scene, and set t
 ## Version History
 
 **1.1**
-   – Enable nodes on all Lights
-   – Add Blackbody Converter set to ``5000`` (daylight-ish) to Emission Shaders
+   + Enable nodes on all Lights
+   + Add Blackbody Converter set to ``5000`` (daylight-ish) to Emission Shaders
 
 **1.2**
-   – Add icons to Buttons
+   + Add icons to Buttons
    _ Refactor Register/Unregister
 
 **1.3**
-   – Move Lights and Empty into new Collection
-   – Refactor Clear Environment
-   – Add "Clear All Lights & Empties" as temp fix for Error Handling
+   + Move Lights and Empty into new Collection
+   + Refactor Clear Environment
+   + Add "Clear All Lights & Empties" as temp fix for Error Handling
 
 **1.4**
-   – Error handling for clicking Add Environment multple times, or Clear Environment when there is no QLE in Scene
-   – Removed **Clear All** button.
+   + Error handling for clicking Add Environment multple times, or Clear Environment when there is no QLE in Scene
+   + Removed **Clear All** button.
 
 **1.5**
-   – Set Lights Blackbody to ``6000``
-   – Arrange Lights Nodes
-   – Code cleanup.
+   + Set Lights Blackbody to ``6000``
+   + Arrange Lights Nodes
+   + Code cleanup.
 
 **1.5.1**
-   – Set light Blackbody to ``5800``, more accurate Sun temperature.
+   + Set light Blackbody to ``5800``, more accurate Sun temperature.
 
 **1.5.2**
-   – Change category to ``Lighting``
-   – Add Wiki URL
-   – Rename script to ``quick_lighting_environment.py``.
+   + Change category to ``Lighting``
+   + Add Wiki URL
+   + Rename script to ``quick_lighting_environment.py``.
 
 **1.5.3**
-   – Clear Environment: Deselect All before deleting QLE, Purge Scene after
-   – Move Add Tracking and Add Blackbody Node into functions
-   – Code cleanup
+   + Clear Environment: Deselect All before deleting QLE, Purge Scene after
+   + Move Add Tracking and Add Blackbody Node into functions
+   + Code cleanup
 
 **1.5.4**
-   – Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection
-   – Reconnect Light to Target if disconnected
-   – Add INFO message alerts for when button click returns no result
+   + Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection
+   + Reconnect Light to Target if disconnected
+   + Add INFO message alerts for when button click returns no result
 
 
 ## Version Path
 
 **1.6**
-   – Popup to set light intensity, color and position when adding QLE. Yep, just light Tri-Lighting.
+   + Popup to set light intensity, color and position when adding QLE. Yep, just light Tri-Lighting.
 
 ***
 
