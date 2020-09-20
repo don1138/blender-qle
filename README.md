@@ -56,7 +56,7 @@ Click **Clear Environment** to delete QLE Lights and Empty from scene, and set t
 **1.5.4**
    + Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection
    + Bugfix: Reconnect Light to Target if disconnected
-   + Add INFO message alerts for when button click returns no result
+   + Add INFO message for when button click returns no result
 
 
 ## Version Path
