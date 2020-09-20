@@ -1,20 +1,20 @@
 bl_info = {
-    "name": "QLE (Quick Lighting Environment)",
+    "name"       : "QLE (Quick Lighting Environment)",
     "description": "Adds Three Area Lights and Sets World Surface to Black",
-    "author": "Don Schnitzius",
-    "version": (1, 5, 4),
-    "blender": (2, 80, 0),
-    "location": "Properties > Scene",
-    "warning": "",
-    "wiki_url": "https://github.com/don1138/blender-qle",
-    "support": "COMMUNITY",
-    "category": "Lighting",
+    "author"     : "Don Schnitzius",
+    "version"    : (1, 5, 4),
+    "blender"    : (2, 80, 0),
+    "location"   : "Properties > Scene",
+    "warning"    : "",
+    "wiki_url"   : "https://github.com/don1138/blender-qle",
+    "support"    : "COMMUNITY",
+    "category"   : "Lighting",
 }
 
 """
 VERSION HISTORY
 
-1.5.4 – 20/09/19
+1.5.4 – 20/09/20
       – Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection
       – (Turns out TRY/EXCEPT statements are bad. Who knew?)
       – Add INFO message alerts for when button click returns no result
@@ -80,29 +80,39 @@ def make_collection(collection_name, parent_collection):
 
 
 def add_tracking(item):
-        bpy.ops.object.constraint_add(type='TRACK_TO')
-        item.constraints["Track To"].track_axis = 'TRACK_NEGATIVE_Z'
-        item.constraints["Track To"].up_axis = 'UP_Y'
-        item.constraints["Track To"].target = bpy.data.objects["Lights_Target"]
+    bpy.ops.object.constraint_add(type='TRACK_TO')
+    item.constraints["Track To"].track_axis = 'TRACK_NEGATIVE_Z'
+    item.constraints["Track To"].up_axis = 'UP_Y'
+    item.constraints["Track To"].target = bpy.data.objects["Lights_Target"]
 
 
 def add_blackbody(item):
-        item.data.use_nodes = True
-        light   = bpy.context.active_object.data
-        nodes   = light.node_tree.nodes
-        lights_output = nodes.get('Light Output')
-        lights_output.location = 0,0
-        lights_output.width = 180
-        node_ox = nodes.get('Emission')
-        node_ox.location = -200,0
-        node_ox.width = 180
-        links   = light.node_tree.links
-        node_bb = nodes.new(type="ShaderNodeBlackbody")
-        node_bb.inputs[0].default_value = 5800
-        node_bb.location = -400,0
-        node_bb.width = 180
-        link    = links.new(node_bb.outputs[0], node_ox.inputs[0])
+    item.data.use_nodes    = True
+    light                  = bpy.context.active_object.data
+    nodes                  = light.node_tree.nodes
+    lights_output          = nodes.get('Light Output')
+    lights_output.location = 0,    0
+    lights_output.width    = 180
+    node_ox                = nodes.get('Emission')
+    node_ox.location       = -200, 0
+    node_ox.width          = 180
+    links                  = light.node_tree.links
+    node_bb                = nodes.new(type="ShaderNodeBlackbody")
+    node_bb.inputs[0].default_value       = 5800
+    node_bb.location       = -400, 0
+    node_bb.width          = 180
+    link                   = links.new(node_bb.outputs[0], node_ox.inputs[0])
 
+
+def add_to_collection(item):
+    my_coll = bpy.data.collections.get("QLE")
+    qle_collection = find_collection(bpy.context, item)
+    if my_coll:
+        my_coll.objects.link(item)
+    else:
+        new_qle_collection = make_collection("QLE", qle_collection)
+        new_qle_collection.objects.link(item)
+    qle_collection.objects.unlink(item)
 
 
 def btn_01(self,context):
@@ -115,6 +125,11 @@ def btn_01(self,context):
         bpy.ops.object.empty_add(type='PLAIN_AXES', location=(0, 0, 1))
         area_target = bpy.context.active_object
         bpy.context.active_object.name = "Lights_Target"
+#    ADD TO COLLECTION
+        add_to_collection(area_target)
+    else:
+        print(f"Lights_Target already in collection")
+        self.report({'INFO'}, "QLE already in Scene")
 
 
 #    ADD AREA LIGHT RIGHT
@@ -124,6 +139,7 @@ def btn_01(self,context):
         ar_track.target = bpy.data.objects["Lights_Target"]
         if ar_track is None:
             add_tracking(area_right)
+        print(f"Area_Right already in collection")
     else:
         bpy.ops.object.light_add(type='AREA', radius=10, location=(5, 1.5, 5))
         area_right = bpy.context.active_object
@@ -136,6 +152,8 @@ def btn_01(self,context):
         add_tracking(area_right)
 #    ADD BLACKBODY
         add_blackbody(area_right)
+#    ADD TO COLLECTION
+        add_to_collection(area_right)
 
 
 #    ADD AREA LIGHT LEFT
@@ -145,6 +163,7 @@ def btn_01(self,context):
         al_track.target = bpy.data.objects["Lights_Target"]
         if al_track is None:
             add_tracking(area_left)
+        print(f"Area_Left already in collection")
     else:
         bpy.ops.object.light_add(type='AREA', radius=10, location=(-5, 1.5, 5))
         area_left = bpy.context.active_object
@@ -157,15 +176,18 @@ def btn_01(self,context):
         add_tracking(area_left)
 #    ADD BLACKBODY
         add_blackbody(area_left)
+#    ADD TO COLLECTION
+        add_to_collection(area_left)
 
 
 #    ADD AREA LIGHT FILL
-    area_fill=bpy.data.objects.get("Area_Fill")
+    area_fill = bpy.data.objects.get("Area_Fill")
     if area_fill:
         af_track = area_fill.constraints.get("Track To")
         af_track.target = bpy.data.objects["Lights_Target"]
         if af_track is None:
             add_tracking(area_fill)
+        print(f"Area_Fill already in collection")
     else:
         bpy.ops.object.light_add(type='AREA', radius=10, location=(0, -5, 5))
         area_fill = bpy.context.active_object
@@ -178,48 +200,9 @@ def btn_01(self,context):
         add_tracking(area_fill)
 #    ADD BLACKBODY
         add_blackbody(area_fill)
+#    ADD TO COLLECTION
+        add_to_collection(area_fill)
 
-
-#    SELECT QLE OBJECTS
-    qle_collection = find_collection(bpy.context, area_right)
-    qle_collection = find_collection(bpy.context, area_left)
-    qle_collection = find_collection(bpy.context, area_fill)
-    qle_collection = find_collection(bpy.context, area_target)
-
-
-#    CREATE NEW COLLECTION
-    try:
-        bpy.data.collection_name["QLE"]
-    except:
-        new_qle_collection = make_collection("QLE", qle_collection)
-
-
-#    MOVE TO NEW COLLECTION
-    try:
-        new_qle_collection.objects.link(area_right)
-        qle_collection.objects.unlink(area_right)
-    except RuntimeError:
-        print(f"Area_Right already in collection")
-
-    try:
-        new_qle_collection.objects.link(area_left)
-        qle_collection.objects.unlink(area_left)
-    except RuntimeError:
-        print(f"Area_Left already in collection")
-
-    try:
-        new_qle_collection.objects.link(area_fill)
-        qle_collection.objects.unlink(area_fill)
-    except RuntimeError:
-        print(f"Area_Fill already in collection")
-
-    try:
-        new_qle_collection.objects.link(area_target)
-        qle_collection.objects.unlink(area_target)
-        # self.report({'INFO'}, "QLE added to Scene")
-    except RuntimeError:
-        print(f"Lights_Target already in collection")
-        self.report({'INFO'}, "QLE already in Scene")
 
 class AddLights(bpy.types.Operator):
     """Add Lights"""
@@ -229,7 +212,6 @@ class AddLights(bpy.types.Operator):
     def execute(self, context):
         btn_01(self, context)
         return {'FINISHED'}
-
 
 
 def btn_02(self, context):
@@ -273,14 +255,13 @@ class ClearLights(bpy.types.Operator):
         return {'FINISHED'}
 
 
-
 class LayoutLightsPanel(bpy.types.Panel):
     """Creates a Panel in the scene context of the properties editor"""
-    bl_label = "Quick Lighting Environment"
-    bl_idname = "SCENE_PT_quickEnvironment"
-    bl_space_type = 'PROPERTIES'
+    bl_label       = "Quick Lighting Environment"
+    bl_idname      = "SCENE_PT_quickEnvironment"
+    bl_space_type  = 'PROPERTIES'
     bl_region_type = 'WINDOW'
-    bl_context = "scene"
+    bl_context     = "scene"
 
     def draw(self, context):
         layout = self.layout
@@ -296,7 +277,6 @@ class LayoutLightsPanel(bpy.types.Panel):
         row = layout.row()
         row.scale_y = 1.5
         row.operator(ClearLights.bl_idname, icon='REMOVE')
-
 
 
 from bpy.utils import register_class, unregister_class
