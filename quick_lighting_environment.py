@@ -2,7 +2,7 @@ bl_info = {
     "name": "QLE (Quick Lighting Environment)",
     "description": "Adds Three Area Lights and Sets World Surface to Black",
     "author": "Don Schnitzius",
-    "version": (1, 5, 3),
+    "version": (1, 5, 4),
     "blender": (2, 80, 0),
     "location": "Properties > Scene",
     "warning": "",
@@ -13,6 +13,11 @@ bl_info = {
 
 """
 VERSION HISTORY
+
+1.5.4 – 20/09/19
+      – Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection
+      – (Turns out TRY/EXCEPT staements are bad. Who knew?)
+      – Add INFO message alerts for when button click returns no result
 
 1.5.3 – 20/09/12
       – Clear Environment: Deselect All before deleting QLE, Purge Scene after
@@ -100,23 +105,21 @@ def add_blackbody(item):
 
 
 
-def btn_01(context):
+def btn_01(self,context):
 
     bpy.data.worlds["World"].node_tree.nodes["Background"].inputs[1].default_value = 0
 
 
-    try:
-        bpy.data.objects["Lights_Target"]
-    except:
+    area_target=bpy.data.objects.get("Lights_Target")
+    if not area_target:
         bpy.ops.object.empty_add(type='PLAIN_AXES', location=(0, 0, 1))
         area_target = bpy.context.active_object
         bpy.context.active_object.name = "Lights_Target"
 
 
 #    ADD AREA LIGHT RIGHT
-    try:
-        bpy.data.objects["Area_Right"]
-    except:
+    area_right=bpy.data.objects.get("Area_Right")
+    if not area_right:
         bpy.ops.object.light_add(type='AREA', radius=10, location=(5, 1.5, 5))
         area_right = bpy.context.active_object
         area_right.name = "Area_Right"
@@ -131,9 +134,8 @@ def btn_01(context):
 
 
 #    ADD AREA LIGHT LEFT
-    try:
-        bpy.data.objects["Area_Left"]
-    except:
+    area_left=bpy.data.objects.get("Area_Left")
+    if not area_left:
         bpy.ops.object.light_add(type='AREA', radius=10, location=(-5, 1.5, 5))
         area_left = bpy.context.active_object
         area_left.name = "Area_Left"
@@ -148,9 +150,8 @@ def btn_01(context):
 
 
 #    ADD AREA LIGHT FILL
-    try:
-        bpy.data.objects["Area_Fill"]
-    except:
+    area_fill=bpy.data.objects.get("Area_Fill")
+    if not area_fill:
         bpy.ops.object.light_add(type='AREA', radius=10, location=(0, -5, 5))
         area_fill = bpy.context.active_object
         area_fill.name = "Area_Fill"
@@ -172,7 +173,10 @@ def btn_01(context):
 
 
 #    CREATE NEW COLLECTION
-    new_qle_collection = make_collection("QLE", qle_collection)
+    try:
+        bpy.data.collection_name["QLE"]
+    except:
+        new_qle_collection = make_collection("QLE", qle_collection)
 
 
 #    MOVE TO NEW COLLECTION
@@ -197,9 +201,10 @@ def btn_01(context):
     try:
         new_qle_collection.objects.link(area_target)
         qle_collection.objects.unlink(area_target)
+        # self.report({'INFO'}, "QLE added to Scene")
     except RuntimeError:
         print(f"Lights_Target already in collection")
-
+        self.report({'INFO'}, "QLE already in Scene")
 
 class AddLights(bpy.types.Operator):
     """Add Lights"""
@@ -207,12 +212,12 @@ class AddLights(bpy.types.Operator):
     bl_label = "Add Environment"
 
     def execute(self, context):
-        btn_01(context)
+        btn_01(self, context)
         return {'FINISHED'}
 
 
 
-def btn_02(context):
+def btn_02(self, context):
 
 #    CLEAR OBJECTS
     try:
@@ -222,9 +227,12 @@ def btn_02(context):
         bpy.data.objects["Area_Right"].select_set(True)
         bpy.data.objects["Lights_Target"].select_set(True)
         bpy.ops.object.delete(use_global=True)
+        # self.report({'INFO'}, "QLE removed from Scene")
 
     except KeyError:
         print(f"One or more objects don't exist")
+        self.report({'INFO'}, "QLE not in Scene")
+
 
 #    CLEAR COLLECTION
     col_name = 'QLE'
@@ -246,7 +254,7 @@ class ClearLights(bpy.types.Operator):
     bl_label = "Clear Environment"
 
     def execute(self, context):
-        btn_02(context)
+        btn_02(self, context)
         return {'FINISHED'}
 
 

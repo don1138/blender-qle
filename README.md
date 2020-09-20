@@ -34,9 +34,12 @@ Click **Clear Environment** to delete QLE Lights and Empty from scene, and set t
 
 **1.5.3** – Clear Environment: Deselect All before deleting QLE, Purge Scene after. Move Add Tracking and Add Blackbody Node into functions. Code cleanup.
 
+**1.5.4** – Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection. Add INFO message alerts for when button click returns no result
+
+
 ## Version Path
 
-**1.6** – Fix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection.
+**1.6** – Popup to set light intensity, color and position when adding QLE. Yep, just light Tri-Lighting.
 
 ***
 
