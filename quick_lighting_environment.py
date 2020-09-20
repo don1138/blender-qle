@@ -119,7 +119,12 @@ def btn_01(self,context):
 
 #    ADD AREA LIGHT RIGHT
     area_right=bpy.data.objects.get("Area_Right")
-    if not area_right:
+    if area_right:
+        ar_track = area_right.constraints.get("Track To")
+        ar_track.target = bpy.data.objects["Lights_Target"]
+        if ar_track is None:
+            add_tracking(area_right)
+    else:
         bpy.ops.object.light_add(type='AREA', radius=10, location=(5, 1.5, 5))
         area_right = bpy.context.active_object
         area_right.name = "Area_Right"
@@ -135,7 +140,12 @@ def btn_01(self,context):
 
 #    ADD AREA LIGHT LEFT
     area_left=bpy.data.objects.get("Area_Left")
-    if not area_left:
+    if area_left:
+        al_track = area_left.constraints.get("Track To")
+        al_track.target = bpy.data.objects["Lights_Target"]
+        if al_track is None:
+            add_tracking(area_left)
+    else:
         bpy.ops.object.light_add(type='AREA', radius=10, location=(-5, 1.5, 5))
         area_left = bpy.context.active_object
         area_left.name = "Area_Left"
@@ -151,7 +161,12 @@ def btn_01(self,context):
 
 #    ADD AREA LIGHT FILL
     area_fill=bpy.data.objects.get("Area_Fill")
-    if not area_fill:
+    if area_fill:
+        af_track = area_fill.constraints.get("Track To")
+        af_track.target = bpy.data.objects["Lights_Target"]
+        if af_track is None:
+            add_tracking(area_fill)
+    else:
         bpy.ops.object.light_add(type='AREA', radius=10, location=(0, -5, 5))
         area_fill = bpy.context.active_object
         area_fill.name = "Area_Fill"
@@ -184,7 +199,7 @@ def btn_01(self,context):
         new_qle_collection.objects.link(area_right)
         qle_collection.objects.unlink(area_right)
     except RuntimeError:
-        print(f"Area_Fill already in collection")
+        print(f"Area_Right already in collection")
 
     try:
         new_qle_collection.objects.link(area_left)
@@ -196,7 +211,7 @@ def btn_01(self,context):
         new_qle_collection.objects.link(area_fill)
         qle_collection.objects.unlink(area_fill)
     except RuntimeError:
-        print(f"Area_Right already in collection")
+        print(f"Area_Fill already in collection")
 
     try:
         new_qle_collection.objects.link(area_target)
