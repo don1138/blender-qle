@@ -12,11 +12,11 @@ Download the latest ZIP from **Releases**, or `quick_lighting_environment.py` fr
 
 This addon creates a panel named **QLE (Quick Lighting Environment)** under ``Properties > Scene``.
 
-**Add Environement** sets the ``World > Surface`` strength to ``0`` (black), and creates three positioned Area Lights. It will also create an Empty named ``Lights_Target`` that is connected to all lights with a ``Track To`` Object Constraint.
+**Add Environement** – Sets the ``World > Surface`` strength to ``0`` (black), and creates three positioned Area Lights. It will also create an Empty named ``Lights_Target`` that is connected to all lights with a ``Track To`` Object Constraint.
 
-If you disconnect/delete a light or the ``Lights_Target``, clicking **Add Environment** again adds the missing object or contraint back into your sene.
+If you disconnect/delete a Light or the Empty, clicking **Add Environment** again adds the missing object or contraint back into your scene.
 
-**Clear Environment** deletes QLE Lights and Empty from scene, and sets the ``World > Surface`` strength back to ``1``.
+**Clear Environment** – Deletes QLE Lights and Empty from scene, and sets the ``World > Surface`` strength back to ``1``.
 
 ## Version History
 
