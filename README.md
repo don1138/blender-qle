@@ -59,8 +59,8 @@ This addon creates a panel named **QLE (Quick Lighting Environment)** under ``Pr
 **1.5.4**
    + Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection
    + Bugfix: Reconnect Light to Target if disconnected
-   + Add INFO message for when Button click returns no result
-
+   + Add INFO Message for when Button click returns no result
+   + Code cleanup: Replace all TRY/EXCEPT with IF/ELSE
 
 ## Version Path
 
