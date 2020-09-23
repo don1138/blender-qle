@@ -22,11 +22,11 @@ This addon creates a panel named **QLE (Quick Lighting Environment)** under ``Pr
 ## Version History
 
 **1.1**
-   + Enable nodes on all Lights
+   + Enable Nodes on all Lights
    + Add Blackbody Converter set to ``5000`` (daylight-ish) to Emission Shaders
 
 **1.2**
-   + Add icons to Buttons
+   + Add Icons to Buttons
    _ Refactor Register/Unregister
 
 **1.3**
@@ -52,20 +52,20 @@ This addon creates a panel named **QLE (Quick Lighting Environment)** under ``Pr
    + Rename script to ``quick_lighting_environment.py``.
 
 **1.5.3**
-   + Clear Environment: Deselect All before deleting QLE, Purge Scene after
+   + Clear Environment: Deselect All before deleting QLE, and Purge Scene after
    + Move Add Tracking and Add Blackbody Node into functions
    + Code cleanup
 
 **1.5.4**
    + Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection
    + Bugfix: Reconnect Light to Target if disconnected
-   + Add INFO message for when button click returns no result
+   + Add INFO message for when Button click returns no result
 
 
 ## Version Path
 
 **1.6**
-   + Popup to set light intensity, color and position when adding QLE. Yep, just like Tri-Lighting.
+   + Popup to set Light intensity, color and position when adding QLE. Yep, just like Tri-Lighting.
 
 ***
 
