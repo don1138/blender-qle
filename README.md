@@ -65,7 +65,7 @@ This addon creates a panel named **QLE (Quick Lighting Environment)** under ``Pr
 ## Version Path
 
 **1.6**
-   + Popup to set Light intensity, color and position when adding QLE. Yep, just like Tri-Lighting.
+   + Popup to set Light intensity, color, and position when adding QLE. Yep, just like Tri-Lighting.
 
 ***
 
