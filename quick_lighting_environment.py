@@ -20,7 +20,7 @@ bl_info = {
     "name"       : "QLE (Quick Lighting Environment)",
     "description": "Adds Three Area Lights and Sets World Surface to Black",
     "author"     : "Don Schnitzius",
-    "version"    : (1, 5, 4),
+    "version"    : (1, 5, 5),
     "blender"    : (2, 80, 0),
     "location"   : "Properties > Scene",
     "warning"    : "",
@@ -29,56 +29,14 @@ bl_info = {
     "category"   : "Lighting",
 }
 
-"""
-VERSION HISTORY
-
-1.5.4 – 20/09/20
-      – Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection
-      – (Turns out TRY/EXCEPT statements are bad. Who knew?)
-      – Add INFO message alerts for when button click returns no result
-
-1.5.3 – 20/09/12
-      – Clear Environment: Deselect All before deleting QLE, Purge Scene after
-      – Move Add Tracking and Add Blackbody Node to functions
-
-1.5.2 – 20/08/30
-      – Change category to Lighting
-      – Add Wiki URL
-      – Rename script to "quick_lighting_environment.py"
-
-1.5.1 – 20/08/22
-      – Set light Blackbody to 5800 (More accurate Sun temperature)
-
-1.5 – 20/07/19
-    – Code cleanup
-    – Arrange light nodes
-    – Set light Blackbody to 6000
-
-1.4 – 20/06/29
-    – Error handling for:
-        – Clicking Add Environment multple times
-        – Clicking Clear Environment when there is no QLE in Scene
-
-1.3 – 20/06/17
-    – Move QLE to New Collection
-    – Sourced from https://devtalk.blender.org/t/what-are-the-python-codes-related-to-collection-actions-for-blender-2-8/4479/4
-    – Refactor Delete QLE
-    – Sourced from https://blender.stackexchange.com/questions/173867/selecting-a-specific-collection-by-name-and-then-deleting-it
-    – Add "Clear All Lights & Empties" Button (Error Handling)
-
-1.2 – 20/06/17
-    – Add Icons to Buttons
-    – Refactor Register/Unregister
-
-1.1 – 20/03/21
-    – Add Blackbody to Lights
-
-1.0 – 20/02/24
-    – Create Addon
-"""
-
 
 import bpy
+
+
+old_world_name = ""
+def wo_register():
+    global old_world_name
+    old_world_name = bpy.context.scene.world.name
 
 
 def find_collection(context, item):
@@ -95,6 +53,17 @@ def make_collection(collection_name, parent_collection):
         new_qle_collection = bpy.data.collections.new(collection_name)
         parent_collection.children.link(new_qle_collection)
         return new_qle_collection
+
+
+def add_to_collection(item):
+    my_coll = bpy.data.collections.get("QLE")
+    qle_collection = find_collection(bpy.context, item)
+    if my_coll:
+        my_coll.objects.link(item)
+    else:
+        new_qle_collection = make_collection("QLE", qle_collection)
+        new_qle_collection.objects.link(item)
+    qle_collection.objects.unlink(item)
 
 
 def add_tracking(item):
@@ -122,20 +91,31 @@ def add_blackbody(item):
     link                   = links.new(node_bb.outputs[0], node_ox.inputs[0])
 
 
-def add_to_collection(item):
-    my_coll = bpy.data.collections.get("QLE")
-    qle_collection = find_collection(bpy.context, item)
-    if my_coll:
-        my_coll.objects.link(item)
-    else:
-        new_qle_collection = make_collection("QLE", qle_collection)
-        new_qle_collection.objects.link(item)
-    qle_collection.objects.unlink(item)
-
-
 def btn_01(self,context):
 
-    bpy.data.worlds["World"].node_tree.nodes["Background"].inputs[1].default_value = 0
+    scene = bpy.context.scene
+    wo_register()
+    print(old_world_name)
+    qle_world = bpy.data.worlds.get("QLE World")
+
+    if qle_world:
+        scene.world = qle_world
+        qle_world.node_tree.nodes["Background"].inputs[1].default_value = 0
+    else:
+        qle_world = bpy.data.worlds.new("QLE World")
+        qle_world.use_nodes = True
+
+        world_wo = qle_world.node_tree.nodes.get('World Output')
+        world_wo.location = (0,0)
+        world_bg = qle_world.node_tree.nodes.get('Background')
+        world_bg.location = (-200,0)
+        world_bb = qle_world.node_tree.nodes.new('ShaderNodeBlackbody')
+        world_bb.inputs[0].default_value = 12500
+        world_bb.location = (-400,0)
+        qle_world.node_tree.links.new(world_bb.outputs[0], world_bg.inputs[0])
+
+        scene.world = qle_world
+        qle_world.node_tree.nodes["Background"].inputs[1].default_value = 0
 
 
     area_target=bpy.data.objects.get("Lights_Target")
@@ -234,6 +214,9 @@ class AddLights(bpy.types.Operator):
 
 def btn_02(self, context):
 
+    scene = bpy.context.scene
+    old_world = bpy.data.worlds.get(old_world_name)
+
 #    CLEAR OBJECTS
     try:
         bpy.ops.object.select_all(action='DESELECT')
@@ -260,7 +243,9 @@ def btn_02(self, context):
     bpy.ops.outliner.orphans_purge()
 
 #    RESET WORLD SURFACE STRENGTH
-    bpy.data.worlds["World"].node_tree.nodes["Background"].inputs[1].default_value = 1
+    qle_world = bpy.data.worlds.get("QLE World")
+    qle_world.node_tree.nodes["Background"].inputs[1].default_value = 1
+    scene.world = old_world
 
 
 class ClearLights(bpy.types.Operator):
@@ -283,8 +268,6 @@ class LayoutLightsPanel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-
-        scene = context.scene
 
         # Add Environment button
         row = layout.row()
