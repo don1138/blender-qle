@@ -20,7 +20,7 @@ bl_info = {
     "name"       : "QLE (Quick Lighting Environment)",
     "description": "Adds Three Area Lights and Sets World Surface to Black",
     "author"     : "Don Schnitzius",
-    "version"    : (1, 5, 5),
+    "version"    : (1, 5, 6),
     "blender"    : (2, 80, 0),
     "location"   : "Properties > Scene",
     "warning"    : "",
@@ -142,6 +142,7 @@ def btn_01(self,context):
         bpy.ops.object.light_add(type='AREA', radius=10, location=(5, 1.5, 5))
         area_right = bpy.context.active_object
         area_right.name = "Area_Right"
+        area_right.data.name = "Area_Right"
         area_right.data.shape = 'RECTANGLE'
         area_right.data.energy = 300
         area_right.data.size = 1
@@ -166,6 +167,7 @@ def btn_01(self,context):
         bpy.ops.object.light_add(type='AREA', radius=10, location=(-5, 1.5, 5))
         area_left = bpy.context.active_object
         area_left.name = "Area_Left"
+        area_left.data.name = "Area_Left"
         area_left.data.shape = 'RECTANGLE'
         area_left.data.energy = 300
         area_left.data.size = 1
@@ -190,6 +192,7 @@ def btn_01(self,context):
         bpy.ops.object.light_add(type='AREA', radius=10, location=(0, -5, 5))
         area_fill = bpy.context.active_object
         area_fill.name = "Area_Fill"
+        area_fill.data.name = "Area_Fill"
         area_fill.data.shape = 'RECTANGLE'
         area_fill.data.energy = 300
         area_fill.data.size = 6

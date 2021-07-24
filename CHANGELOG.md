@@ -1,3 +1,6 @@
+**1.5.6** <!-- 21/07/23 -->
+   + Assign custom `data.name` to Lights
+
 **1.5.5** <!-- 21/07/18 -->
    + Fixed error if `scene.world.name` is not named "World"
    + Creates new World named "QLE World" and swaps it with existing World on Add/Delete
