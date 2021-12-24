@@ -1,3 +1,10 @@
+**1.6.0** <!-- 21/12/24 -->
+   + Added new Light `Area_Back`
+   + Set `Area_Left` blackbody to `3800` (orange tint)
+   + Set `Area_Right` blackbody to `8800` (blue tint)
+   + Added `Backdrop` object to scene
+   + Bugfix error messages
+
 **1.5.6** <!-- 21/07/23 -->
    + Assign custom `data.name` to Lights
 
@@ -40,7 +47,7 @@
 
 **1.2** <!-- 20/06/17 -->
    + Add Icons to Buttons
-   _ Refactor Register/Unregister
+   + Refactor Register/Unregister
 
 **1.1** <!-- 20/03/21 -->
    + Enable Nodes on all Lights
