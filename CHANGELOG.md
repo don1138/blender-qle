@@ -2,6 +2,7 @@
    + Added new Light `Area_Back`
    + Set `Area_Left` blackbody to `3800` (orange tint)
    + Set `Area_Right` blackbody to `8800` (blue tint)
+   + Adjust light positions
    + Added `Backdrop` object to scene
    + Bugfix error messages
 
