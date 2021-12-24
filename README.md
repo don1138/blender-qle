@@ -2,7 +2,7 @@
 
 **Add a basic Quick Lighting Environment to your Blender scene.**
 
-![Blender QLE Screenshot](https://github.com/don1138/blender-qle/blob/master/blender-qle.jpg)
+![Blender QLE Screenshot](https://github.com/don1138/blender-qle/blob/master/blender-qle-2.jpg)
 
 ## Installation
 
