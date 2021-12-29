@@ -20,7 +20,7 @@ bl_info = {
     "name"       : "QLE (Quick Lighting Environment)",
     "description": "Adds Three Area Lights and Sets World Surface to Black",
     "author"     : "Don Schnitzius",
-    "version"    : (1, 6, 0),
+    "version"    : (1, 6, 1),
     "blender"    : (2, 80, 0),
     "location"   : "Properties > Scene",
     "warning"    : "",
@@ -287,14 +287,14 @@ def btn_02(self, context):
 
 
 #    CLEAR COLLECTION
-    col_name = 'QLE'
-    try:
-        bpy.data.collections.remove(bpy.data.collections[col_name])
-    except KeyError:
-        # print(f"The collection {col_name} doesn't exist")
+    qle_col = bpy.data.collections.get('QLE')
+    if qle_col:
+        bpy.data.collections.remove(qle_col)
+
 
 #    PURGE SCENE
     bpy.ops.outliner.orphans_purge()
+
 
 #    RESET WORLD SURFACE STRENGTH
     qle_world = bpy.data.worlds.get("QLE World")
