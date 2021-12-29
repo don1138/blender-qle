@@ -1,3 +1,6 @@
+**1.6.1** <!-- 21/12/29 -->
+   + Bugfix Clear Collection
+
 **1.6.0** <!-- 21/12/24 -->
    + Added new Light `Area_Back`
    + Set `Area_Left` blackbody to `3800` (orange tint)
