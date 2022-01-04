@@ -22,7 +22,11 @@ This addon creates a panel named **Quick Lighting Environment** under ``Properti
 ### - Clear Environment
    + Purges **QLE Lights**, **Backdrop**, and **Empty** from scene, and resets the **World** from **"QLE World"** back to the original.
 
+<br><br>
+
 <p align="center">
   <img align="center" src="https://badges.pufler.dev/created/don1138/blender-qle?style=for-the-badge&colorA=222&colorB=48684b" alt="Repo Created">
   <img align="center" src="https://badges.pufler.dev/updated/don1138/blender-qle?style=for-the-badge&colorA=222&colorB=48684b" alt="Repo Updated">
 </p>
+
+![Alt](https://repobeats.axiom.co/api/embed/e7313fc8115e168686e43e209cb5138dbb64f20a.svg "Repobeats analytics image")
