@@ -37,6 +37,10 @@ This addon creates a panel named **Quick Lighting Environment** under ``Properti
 ### Area Fill
 ![QLE - Area Fill](https://github.com/don1138/blender-qle/blob/master/imx/QLE-05.jpg)
 
+## Notes
+- Using World light is a bit of a cheat, but I like how it evens out the backdrop.
+- If you want a true "Studio" setup, turn the **QLE World** strength to `0` and increase the power of the **Area Fill** light.
+- You may also want to angle some bounce cards (I use a basic mesh plane with `Properties > Object Properties > Visibility > Ray Visibility > Camera` and `Glossy` turned off) on the ground in front of your model to lessen the bottom shadows.
 <br><br>
 
 <p align="center">
