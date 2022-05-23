@@ -1,3 +1,10 @@
+**1.6.2** <!-- 22/05/22 -->
+   + Added new Light
+   + Change `QLE World`, `Area_Fill`, and `Area_Back` blackbody from `5800` to `5454` (equal energy)
+   + Change `QLE World` strength from `0` to `0.25`
+   + Change `Backdrop` color to `#808080` (neutral gray)
+   + Adjust light positions
+
 **1.6.1** <!-- 21/12/29 -->
    + Bugfix Clear Collection
 

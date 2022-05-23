@@ -18,9 +18,9 @@
 
 bl_info = {
     "name"       : "QLE (Quick Lighting Environment)",
-    "description": "Adds Three Area Lights and Sets World Surface to Black",
+    "description": "Add Area Lights & Sets World Surface",
     "author"     : "Don Schnitzius",
-    "version"    : (1, 6, 1),
+    "version"    : (1, 6, 2),
     "blender"    : (2, 80, 0),
     "location"   : "Properties > Scene",
     "warning"    : "",
@@ -88,7 +88,7 @@ def add_blackbody(item):
     node_ox.width          = 180
     links                  = light.node_tree.links
     node_bb                = nodes.new(type="ShaderNodeBlackbody")
-    node_bb.inputs[0].default_value       = 5800
+    node_bb.inputs[0].default_value       = 5454
     node_bb.location       = -400, 0
     node_bb.width          = 180
     link                   = links.new(node_bb.outputs[0], node_ox.inputs[0])
@@ -103,7 +103,7 @@ def btn_01(self,context):
 
     if qle_world:
         scene.world = qle_world
-        qle_world.node_tree.nodes["Background"].inputs[1].default_value = 0
+        qle_world.node_tree.nodes["Background"].inputs[1].default_value = 0.25
     else:
         qle_world = bpy.data.worlds.new("QLE World")
         qle_world.use_nodes = True
@@ -111,14 +111,14 @@ def btn_01(self,context):
         world_wo = qle_world.node_tree.nodes.get('World Output')
         world_wo.location = (0,0)
         world_bg = qle_world.node_tree.nodes.get('Background')
+        world_bg.inputs[1].default_value = 0.25
         world_bg.location = (-200,0)
         world_bb = qle_world.node_tree.nodes.new('ShaderNodeBlackbody')
-        world_bb.inputs[0].default_value = 12500
+        world_bb.inputs[0].default_value = 5454
         world_bb.location = (-400,0)
         qle_world.node_tree.links.new(world_bb.outputs[0], world_bg.inputs[0])
 
         scene.world = qle_world
-        qle_world.node_tree.nodes["Background"].inputs[1].default_value = 0
 
 #    ADJUST EXPOSURE
     # scene.view_settings.exposure = 0.2
@@ -144,19 +144,19 @@ def btn_01(self,context):
             add_tracking(area_right)
         print(f"Area_Right already in collection")
     else:
-        bpy.ops.object.light_add(type='AREA', radius=10, location=(5, -2.5, 5))
+        bpy.ops.object.light_add(type='AREA', radius=10, location=(5, -5, 5))
         area_right = bpy.context.active_object
         area_right.name = "Area_Right"
         area_right.data.name = "Area_Right"
         area_right.data.shape = 'RECTANGLE'
         area_right.data.energy = 100
-        area_right.data.size = 1
-        area_right.data.size_y = 3
+        area_right.data.size = 8
+        area_right.data.size_y = 2
 #    ADD TRACKING
         add_tracking(area_right)
 #    ADD BLACKBODY
         add_blackbody(area_right)
-        bpy.data.lights["Area_Right"].node_tree.nodes["Blackbody"].inputs[0].default_value = 8800
+        bpy.data.lights["Area_Right"].node_tree.nodes["Blackbody"].inputs[0].default_value = 20000
 #    ADD TO COLLECTION
         add_to_collection(area_right)
 
@@ -170,14 +170,14 @@ def btn_01(self,context):
             add_tracking(area_left)
         print(f"Area_Left already in collection")
     else:
-        bpy.ops.object.light_add(type='AREA', radius=10, location=(-5, -2.5, 5))
+        bpy.ops.object.light_add(type='AREA', radius=10, location=(-5, -5, 5))
         area_left = bpy.context.active_object
         area_left.name = "Area_Left"
         area_left.data.name = "Area_Left"
         area_left.data.shape = 'RECTANGLE'
         area_left.data.energy = 100
-        area_left.data.size = 1
-        area_left.data.size_y = 3
+        area_left.data.size = 8
+        area_left.data.size_y = 2
 #    ADD TRACKING
         add_tracking(area_left)
 #    ADD BLACKBODY
@@ -196,14 +196,14 @@ def btn_01(self,context):
             add_tracking(area_fill)
         print(f"Area_Fill already in collection")
     else:
-        bpy.ops.object.light_add(type='AREA', radius=10, location=(0, -5, 5))
+        bpy.ops.object.light_add(type='AREA', radius=10, location=(0, 0, 10))
         area_fill = bpy.context.active_object
         area_fill.name = "Area_Fill"
         area_fill.data.name = "Area_Fill"
         area_fill.data.shape = 'RECTANGLE'
-        area_fill.data.energy = 500
-        area_fill.data.size = 6
-        area_fill.data.size_y = 4
+        area_fill.data.energy = 400
+        area_fill.data.size = 8
+        area_fill.data.size_y = 8
 #    ADD TRACKING
         add_tracking(area_fill)
 #    ADD BLACKBODY
@@ -227,8 +227,8 @@ def btn_01(self,context):
         area_back.data.name = "Area_Back"
         area_back.data.shape = 'RECTANGLE'
         area_back.data.energy = 100
-        area_back.data.size = 6
-        area_back.data.size_y = 0.5
+        area_back.data.size = 8
+        area_back.data.size_y = 1
         # area_back.rotation_euler[0] = 0.785398
 #    ADD TRACKING
         add_tracking(area_back)
