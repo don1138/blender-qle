@@ -10,7 +10,9 @@ Download the latest ZIP from [**Releases**](https://github.com/don1138/blender-q
 
 ## Usage
 
-This addon creates a panel named **Quick Lighting Environment** under ``Properties > Scene``.
+This addon creates a panel named **Quick Lighting Environment** under `Properties > Scene`.
+
+**!! IMPORTANT !!** Make sure you have an active **World** in your scene, or the add-on will error out.
 
 ### + Add Environement
    + Creates a **World** named **"QLE World"** with **Background > Strength** set to `0.25` and a **Blackbody** value of `5454`.
