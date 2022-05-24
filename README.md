@@ -14,7 +14,7 @@ This addon creates a panel named **Quick Lighting Environment** under ``Properti
 
 ### + Add Environement
    + Creates a **World** named **"QLE World"** with **Background > Strength** set to `0.25` and a **Blackbody** value of `5454`.
-   + Creates four positioned **Area Lights** with **Blackbody** values of `3800` (Left, orange tint), `5454` (Front and Back, equal energy), and `20,000` (Right, blue tint -- or at least as blue as a blackbody light gets). 
+   + Creates four positioned **Area Lights** with **Blackbody** values of `3800` (Left, orange tint), `5454` (Fill and Back, equal energy), and `20,000` (Right, blue tint -- or at least as blue as a blackbody light gets). 
    + Creates an **Empty** named `Lights_Target` and connects all **Lights** to it with ``Track To`` **Object Constraints**.
    + Adds an **Mesh Object** named `Backdrop`.
    + If you disconnect/delete a **Light**, the **Backdrop**, or the **Empty**, clicking **Add Environment** re-inserts the missing object or constraint back into your scene.
