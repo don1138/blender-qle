@@ -20,7 +20,7 @@ bl_info = {
     "name"       : "QLE (Quick Lighting Environment)",
     "description": "Add Area Lights & Sets World Surface",
     "author"     : "Don Schnitzius",
-    "version"    : (1, 6, 2),
+    "version"    : (1, 6, 3),
     "blender"    : (2, 80, 0),
     "location"   : "Properties > Scene",
     "warning"    : "",
@@ -77,21 +77,18 @@ def add_tracking(item):
 
 
 def add_blackbody(item):
-    item.data.use_nodes    = True
-    light                  = bpy.context.active_object.data
-    nodes                  = light.node_tree.nodes
-    lights_output          = nodes.get('Light Output')
-    lights_output.location = 0,    0
-    lights_output.width    = 180
-    node_ox                = nodes.get('Emission')
-    node_ox.location       = -200, 0
-    node_ox.width          = 180
-    links                  = light.node_tree.links
-    node_bb                = nodes.new(type="ShaderNodeBlackbody")
-    node_bb.inputs[0].default_value       = 5454
-    node_bb.location       = -400, 0
-    node_bb.width          = 180
-    link                   = links.new(node_bb.outputs[0], node_ox.inputs[0])
+    item.data.use_nodes = True
+    light = bpy.context.active_object.data
+    nodes = light.node_tree.nodes
+    lights_output = nodes.get('Light Output')
+    lights_output.location = 0, 0
+    node_ox = nodes.get('Emission')
+    node_ox.location = -200, 0
+    links = light.node_tree.links
+    node_bb = nodes.new(type="ShaderNodeBlackbody")
+    node_bb.inputs[0].default_value = 5454
+    node_bb.location = -400, 0
+    link = links.new(node_bb.outputs[0], node_ox.inputs[0])
 
 
 def btn_01(self,context):
@@ -122,7 +119,6 @@ def btn_01(self,context):
 
 #    ADJUST EXPOSURE
     # scene.view_settings.exposure = 0.2
-
     area_target=bpy.data.objects.get("Lights_Target")
     if not area_target:
         bpy.ops.object.empty_add(type='PLAIN_AXES', location=(0, 0, 1))
@@ -133,8 +129,6 @@ def btn_01(self,context):
     else:
         print(f"Lights_Target already in collection")
         self.report({'INFO'}, "QLE already in Scene")
-
-
 #    ADD AREA LIGHT RIGHT
     area_right=bpy.data.objects.get("Area_Right")
     if area_right:
@@ -150,8 +144,8 @@ def btn_01(self,context):
         area_right.data.name = "Area_Right"
         area_right.data.shape = 'RECTANGLE'
         area_right.data.energy = 100
-        area_right.data.size = 8
-        area_right.data.size_y = 2
+        area_right.data.size = 2
+        area_right.data.size_y = 6
 #    ADD TRACKING
         add_tracking(area_right)
 #    ADD BLACKBODY
@@ -176,8 +170,8 @@ def btn_01(self,context):
         area_left.data.name = "Area_Left"
         area_left.data.shape = 'RECTANGLE'
         area_left.data.energy = 100
-        area_left.data.size = 8
-        area_left.data.size_y = 2
+        area_left.data.size = 2
+        area_left.data.size_y = 6
 #    ADD TRACKING
         add_tracking(area_left)
 #    ADD BLACKBODY
@@ -185,8 +179,6 @@ def btn_01(self,context):
         bpy.data.lights["Area_Left"].node_tree.nodes["Blackbody"].inputs[0].default_value = 3800
 #    ADD TO COLLECTION
         add_to_collection(area_left)
-
-
 #    ADD AREA LIGHT FILL
     area_fill = bpy.data.objects.get("Area_Fill")
     if area_fill:
@@ -196,22 +188,19 @@ def btn_01(self,context):
             add_tracking(area_fill)
         print(f"Area_Fill already in collection")
     else:
-        bpy.ops.object.light_add(type='AREA', radius=10, location=(0, 0, 10))
+        bpy.ops.object.light_add(type='AREA', radius=10, location=(0, 0, 8))
         area_fill = bpy.context.active_object
         area_fill.name = "Area_Fill"
         area_fill.data.name = "Area_Fill"
-        area_fill.data.shape = 'RECTANGLE'
-        area_fill.data.energy = 400
+        area_fill.data.shape = 'DISK'
+        area_fill.data.energy = 800
         area_fill.data.size = 8
-        area_fill.data.size_y = 8
 #    ADD TRACKING
         add_tracking(area_fill)
 #    ADD BLACKBODY
         add_blackbody(area_fill)
 #    ADD TO COLLECTION
         add_to_collection(area_fill)
-
-
 #    ADD AREA LIGHT BACK
     area_back = bpy.data.objects.get("Area_Back")
     if area_back:
@@ -229,7 +218,6 @@ def btn_01(self,context):
         area_back.data.energy = 100
         area_back.data.size = 8
         area_back.data.size_y = 1
-        # area_back.rotation_euler[0] = 0.785398
 #    ADD TRACKING
         add_tracking(area_back)
 #    ADD BLACKBODY
@@ -249,7 +237,6 @@ def btn_01(self,context):
                 bpy.context.collection.objects.link(obj)
                 add_to_collection(obj)
 
-
         self.report({'INFO'}, "QLE added to Scene")
 
 
@@ -268,7 +255,6 @@ def btn_02(self, context):
     scene = bpy.context.scene
     old_world = bpy.data.worlds.get(old_world_name)
 
-
 #    CLEAR OBJECTS
     try:
         bpy.ops.object.select_all(action='DESELECT')
@@ -285,16 +271,10 @@ def btn_02(self, context):
         # print(f"One or more objects don't exist")
         self.report({'INFO'}, "QLE not in Scene")
 
-
 #    CLEAR COLLECTION
     qle_col = bpy.data.collections.get('QLE')
     if qle_col:
         bpy.data.collections.remove(qle_col)
-
-
-#    PURGE SCENE
-    bpy.ops.outliner.orphans_purge()
-
 
 #    RESET WORLD SURFACE STRENGTH
     qle_world = bpy.data.worlds.get("QLE World")
@@ -302,6 +282,9 @@ def btn_02(self, context):
         qle_world.node_tree.nodes["Background"].inputs[1].default_value = 1
         scene.world = old_world
         # scene.view_settings.exposure = old_exposure_val
+
+#    PURGE SCENE
+    bpy.ops.outliner.orphans_purge(do_local_ids=True, do_linked_ids=True, do_recursive=True)
 
 
 class ClearLights(bpy.types.Operator):

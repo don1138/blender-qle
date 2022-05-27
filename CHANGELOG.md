@@ -1,3 +1,8 @@
+**1.6.3** <!-- 22/05/24 -->
+   + Change `Area_Fill` light shape to `DISK` and location Z to `8`
+   + Change `Area_Left` and `Area_Right` light dimensions to `2` x `6`
+   + Change `Backdrop` roughness to `1`
+
 **1.6.2** <!-- 22/05/22 -->
    + Added new Light
    + Change `QLE World`, `Area_Fill`, and `Area_Back` blackbody from `5800` to `5454` (equal energy)
