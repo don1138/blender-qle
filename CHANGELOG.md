@@ -1,3 +1,6 @@
+**1.6.4** <!-- 22/05/27 -->
+   + Bugfix: If you launch Blender and open a file with an existing **QLE** collection, deleting the collection sets the `World` to null, and causes an error when adding the collection again
+
 **1.6.3** <!-- 22/05/24 -->
    + Change `Area_Fill` light shape to `DISK` and location Z to `8`
    + Change `Area_Left` and `Area_Right` light dimensions to `2` x `6`

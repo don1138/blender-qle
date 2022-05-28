@@ -20,7 +20,7 @@ bl_info = {
     "name"       : "QLE (Quick Lighting Environment)",
     "description": "Add Area Lights & Sets World Surface",
     "author"     : "Don Schnitzius",
-    "version"    : (1, 6, 3),
+    "version"    : (1, 6, 4),
     "blender"    : (2, 80, 0),
     "location"   : "Properties > Scene",
     "warning"    : "",
@@ -154,7 +154,6 @@ def btn_01(self,context):
 #    ADD TO COLLECTION
         add_to_collection(area_right)
 
-
 #    ADD AREA LIGHT LEFT
     area_left=bpy.data.objects.get("Area_Left")
     if area_left:
@@ -225,7 +224,6 @@ def btn_01(self,context):
 #    ADD TO COLLECTION
         add_to_collection(area_back)
 
-
 #    ADD BACKDROP OBJECT
         filepath = os.path.join(os.path.dirname(__file__),"_backdrop.blend")
         obj_name = "Backdrop"
@@ -278,9 +276,21 @@ def btn_02(self, context):
 
 #    RESET WORLD SURFACE STRENGTH
     qle_world = bpy.data.worlds.get("QLE World")
+    default_world = bpy.data.worlds.get("World")
     if qle_world:
         qle_world.node_tree.nodes["Background"].inputs[1].default_value = 1
-        scene.world = old_world
+        if old_world:
+            scene.world = old_world
+        elif default_world:
+            scene.world = default_world
+        else:
+            new_world = bpy.data.worlds.new("World")
+            new_world.use_nodes = True
+            world_wo = new_world.node_tree.nodes.get('World Output')
+            world_wo.location = (0,0)
+            world_bg = new_world.node_tree.nodes.get('Background')
+            world_bg.location = (-200,0)
+            scene.world = new_world
         # scene.view_settings.exposure = old_exposure_val
 
 #    PURGE SCENE
