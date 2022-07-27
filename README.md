@@ -46,8 +46,9 @@ This addon creates a panel named **Quick Lighting Environment** under `Propertie
 <br><br>
 
 <p align="center">
-  <img align="center" src="https://badges.pufler.dev/created/don1138/blender-qle?style=for-the-badge&colorA=222&colorB=48684b" alt="Repo Created">
-  <img align="center" src="https://badges.pufler.dev/updated/don1138/blender-qle?style=for-the-badge&colorA=222&colorB=48684b" alt="Repo Updated">
+  <img alt="GitHub latest commit" src="https://img.shields.io/github/last-commit/don1138/blender-qle">
+  <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/don1138/blender-qle">
+  <img alt="Github all releases" src="https://img.shields.io/github/downloads/don1138/blender-qle/total.svg"><br>
+  <img src="https://repobeats.axiom.co/api/embed/e7313fc8115e168686e43e209cb5138dbb64f20a.svg" alt="Repobeats analytics image">
 </p>
 
-![Alt](https://repobeats.axiom.co/api/embed/e7313fc8115e168686e43e209cb5138dbb64f20a.svg "Repobeats analytics image")
