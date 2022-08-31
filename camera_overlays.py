@@ -68,10 +68,10 @@ class CAMERA_SCT_overlays(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class CAMERA_SP_passeport(bpy.types.Operator):
-    """Set Passeport to 1.0"""
-    bl_idname = "camera.passeport_toggle"
-    bl_label = "Set Passeport to 1.0"
+class CAMERA_SP_passepartout(bpy.types.Operator):
+    """Toggle Passepartout"""
+    bl_idname = "camera.passepartout_toggle"
+    bl_label = "Toggle Passepartout"
     bl_options = {'REGISTER', 'UNDO'}
 
     # @classmethod
@@ -93,7 +93,7 @@ class CAMERA_SP_passeport(bpy.types.Operator):
 classes = [
     CAMERA_SCG_overlays,
     CAMERA_SCT_overlays,
-    CAMERA_SP_passeport,
+    CAMERA_SP_passepartout,
 ]
 
 
@@ -101,7 +101,7 @@ def draw_inmenu(self, context):
     self.layout.separator()
     self.layout.operator("camera.golden_overlays", text="Golden Overlays")
     self.layout.operator("camera.harmony_overlays", text="Harmony Overlays")
-    self.layout.operator("camera.passeport_toggle", text="Passeport Toggle")
+    self.layout.operator("camera.passepartout_toggle", text="Passepartout Toggle")
     self.layout.separator()
 
 
