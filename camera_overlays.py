@@ -2,11 +2,11 @@ bl_info = {
     "name": "Camera Overlays",
     "description": "Show/Hide Harmony and Golden Ratios and Triangles",
     "author": "Don Schnitzius",
-    "version": (1, 1, 0),
+    "version": (1, 2, 0),
     "blender": (2, 80, 0),
     "location": "Context Menu (Right Mouse Button)",
     "warning": "",
-    "doc_url"   : "https://github.com/don1138/blender-qle",
+    "doc_url": "https://github.com/don1138/blender-qle",
     "tracker_url": "",
     "support": "COMMUNITY",
     "category": "Camera",
@@ -14,6 +14,30 @@ bl_info = {
 
 
 import bpy
+
+
+class CAMERA_SCC_overlays(bpy.types.Operator):
+    """Show/Hide Center Overlays"""
+    bl_idname = "camera.center_overlays"
+    bl_label = "Show Center Overlays"
+    bl_options = {'REGISTER', 'UNDO'}
+
+#    @classmethod
+#    def poll(cls, context):
+#        ob = bpy.context.active_object
+#        return ob and ob.type == 'CAMERA'
+
+    def execute(self, context):
+        ob = bpy.context.scene.camera.data
+
+        if ob.show_composition_center == False:
+            ob.show_composition_center = True
+            ob.show_composition_center_diagonal = True
+        else:
+            ob.show_composition_center = False
+            ob.show_composition_center_diagonal = False
+
+        return {'FINISHED'}
 
 
 class CAMERA_SCG_overlays(bpy.types.Operator):
@@ -42,7 +66,7 @@ class CAMERA_SCG_overlays(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class CAMERA_SCT_overlays(bpy.types.Operator):
+class CAMERA_SCH_overlays(bpy.types.Operator):
     """Show/Hide Harmony Overlays"""
     bl_idname = "camera.harmony_overlays"
     bl_label = "Show Harmony Overlays"
@@ -91,14 +115,16 @@ class CAMERA_SP_passepartout(bpy.types.Operator):
 
 
 classes = [
+    CAMERA_SCC_overlays,
     CAMERA_SCG_overlays,
-    CAMERA_SCT_overlays,
+    CAMERA_SCH_overlays,
     CAMERA_SP_passepartout,
 ]
 
 
 def draw_inmenu(self, context):
     self.layout.separator()
+    self.layout.operator("camera.center_overlays", text="Center Overlays")
     self.layout.operator("camera.golden_overlays", text="Golden Overlays")
     self.layout.operator("camera.harmony_overlays", text="Harmony Overlays")
     self.layout.operator("camera.passepartout_toggle", text="Passepartout Toggle")
