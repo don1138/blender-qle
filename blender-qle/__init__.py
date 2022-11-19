@@ -44,18 +44,15 @@ def wo_register():
 
 def find_collection(context, item):
     collections = item.users_collection
-    if len(collections) > 0:
-        return collections[0]
-    return context.scene.collection
+    return collections[0] if len(collections) > 0 else context.scene.collection
 
 
 def make_collection(collection_name, parent_collection):
     if collection_name in bpy.data.collections:
         return bpy.data.collections[collection_name]
-    else:
-        new_qle_collection = bpy.data.collections.new(collection_name)
-        parent_collection.children.link(new_qle_collection)
-        return new_qle_collection
+    new_qle_collection = bpy.data.collections.new(collection_name)
+    parent_collection.children.link(new_qle_collection)
+    return new_qle_collection
 
 
 def add_to_collection(item):
