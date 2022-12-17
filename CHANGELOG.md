@@ -1,3 +1,7 @@
+**1.6.5** <!-- 22/12/17 -->
+  + Code refactoring
+  + PEP8 formatting
+
 **1.6.4** <!-- 22/05/27 -->
    + Bugfix: If you launch Blender and open a file with an existing **QLE** collection, deleting the collection sets the `World` to null, and causes an error when adding the collection again
 
