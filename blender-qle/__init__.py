@@ -17,6 +17,10 @@
 # ##### END GPL LICENSE BLOCK #####
 
 
+import bpy
+import os
+
+
 bl_info = {
     "name": "QLE (Quick Lighting Environment)",
     "description": "Add Area Lights & Sets World Surface",
@@ -29,10 +33,6 @@ bl_info = {
     "support": "COMMUNITY",
     "category": "Lighting",
 }
-
-
-import os
-import bpy
 
 
 old_world_name = ""
@@ -181,8 +181,7 @@ def btn_01(self, context):
     if area_right := bpy.data.objects.get("Area_Right"):
         ar_track = add_track_to(area_right, 'Area_Right')
     else:
-        area_right = add_light((5, -5, 5), 'Area_Right',
-                               'RECTANGLE', 100, 2, 6)
+        area_right = add_light((5, -5, 5), 'Area_Right', 'RECTANGLE', 100, 2, 6)
         bpy.data.lights["Area_Right"].node_tree.nodes["Blackbody"].inputs[0].default_value = 20000
 
 #    ADD AREA LIGHT LEFT
@@ -203,20 +202,23 @@ def btn_01(self, context):
         ab_track = add_track_to(area_back, 'Area_Back')
     else:
         area_back = add_light((0, 5, 5), 'Area_Back', 'RECTANGLE', 100, 8, 1)
+        add_backdrop()
 
-#    ADD BACKDROP OBJECT
-        filepath = os.path.join(os.path.dirname(__file__), "_backdrop.blend")
-        obj_name = "Backdrop"
-        link = False
-        with bpy.data.libraries.load(filepath, link=link) as (data_from, data_to):
-            data_to.objects = [
-                name for name in data_from.objects if name.startswith(obj_name)]
-        for obj in data_to.objects:
-            if obj is not None:
-                bpy.context.collection.objects.link(obj)
-                add_to_collection(obj)
+    self.report({'INFO'}, "QLE added to Scene")
 
-        self.report({'INFO'}, "QLE added to Scene")
+
+def add_backdrop():
+    #    ADD BACKDROP OBJECT
+    filepath = os.path.join(os.path.dirname(__file__), "_backdrop.blend")
+    obj_name = "Backdrop"
+    link = False
+    with bpy.data.libraries.load(filepath, link=link) as (data_from, data_to):
+        data_to.objects = [
+            name for name in data_from.objects if name.startswith(obj_name)]
+    for obj in data_to.objects:
+        if obj is not None:
+            bpy.context.collection.objects.link(obj)
+            add_to_collection(obj)
 
 
 class AddLights(bpy.types.Operator):
