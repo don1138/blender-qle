@@ -1,15 +1,15 @@
 bl_info = {
-    "name": "Camera Overlays",
+    "name"       : "Camera Overlays",
     "description": "Show/Hide Harmony and Golden Ratios and Triangles",
-    "author": "Don Schnitzius",
-    "version": (1, 2, 0),
-    "blender": (2, 80, 0),
-    "location": "Context Menu (Right Mouse Button)",
-    "warning": "",
-    "doc_url": "https://github.com/don1138/blender-qle",
+    "author"     : "Don Schnitzius",
+    "version"    : (1, 2, 2),
+    "blender"    : (3, 0, 0),
+    "location"   : "Context Menu (Right Mouse Button)",
+    "warning"    : "",
+    "doc_url"    : "https://github.com/don1138/blender-qle",
     "tracker_url": "",
-    "support": "COMMUNITY",
-    "category": "Camera",
+    "support"    : "COMMUNITY",
+    "category"   : "Camera",
 }
 
 
@@ -55,15 +55,15 @@ class CAMERA_SCG_overlays(bpy.types.Operator):
         ob = bpy.context.scene.camera.data
 
         if ob.show_composition_golden == False:
-            ob.show_composition_golden = True
-            ob.show_composition_golden_tria_a = True
-            ob.show_composition_golden_tria_b = True
+            self.show_golden(True, ob)
         else:
-            ob.show_composition_golden = False
-            ob.show_composition_golden_tria_a = False
-            ob.show_composition_golden_tria_b = False
-
+            self.show_golden(False, ob)
         return {'FINISHED'}
+
+    def show_golden(self, bool, ob):
+        ob.show_composition_golden = bool
+        ob.show_composition_golden_tria_a = bool
+        ob.show_composition_golden_tria_b = bool
 
 
 class CAMERA_SCH_overlays(bpy.types.Operator):
@@ -81,15 +81,15 @@ class CAMERA_SCH_overlays(bpy.types.Operator):
         ob = bpy.context.scene.camera.data
 
         if ob.show_composition_thirds == False:
-            ob.show_composition_thirds = True
-            ob.show_composition_harmony_tri_a = True
-            ob.show_composition_harmony_tri_b = True
+            self.show_harmony(True, ob)
         else:
-            ob.show_composition_thirds = False
-            ob.show_composition_harmony_tri_a = False
-            ob.show_composition_harmony_tri_b = False
-
+            self.show_harmony(False, ob)
         return {'FINISHED'}
+
+    def show_harmony(self, bool, ob):
+        ob.show_composition_thirds = bool
+        ob.show_composition_harmony_tri_a = bool
+        ob.show_composition_harmony_tri_b = bool
 
 
 class CAMERA_SP_passepartout(bpy.types.Operator):
@@ -106,11 +106,7 @@ class CAMERA_SP_passepartout(bpy.types.Operator):
     def execute(self, context):
         ob = bpy.context.scene.camera.data
 
-        if ob.passepartout_alpha != 1:
-            ob.passepartout_alpha = 1
-        else:
-            ob.passepartout_alpha = 0.5
-
+        ob.passepartout_alpha = 1 if ob.passepartout_alpha != 1 else 0.5
         return {'FINISHED'}
 
 
@@ -124,9 +120,9 @@ classes = [
 
 def draw_inmenu(self, context):
     self.layout.separator()
-    self.layout.operator("camera.center_overlays", text="Center Overlays")
-    self.layout.operator("camera.golden_overlays", text="Golden Overlays")
-    self.layout.operator("camera.harmony_overlays", text="Harmony Overlays")
+    self.layout.operator("camera.center_overlays",     text="Center Overlays")
+    self.layout.operator("camera.golden_overlays",     text="Golden Overlays")
+    self.layout.operator("camera.harmony_overlays",    text="Harmony Overlays")
     self.layout.operator("camera.passepartout_toggle", text="Passepartout Toggle")
     self.layout.separator()
 
