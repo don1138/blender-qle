@@ -43,6 +43,11 @@ This addon creates a panel named **Quick Lighting Environment** under `Propertie
 - Using World light is a bit of a cheat, but I like how it evens out the backdrop.
 - If you want a true "Studio" setup, turn the **QLE World** strength to `0` and increase the power of the **Area Fill** light.
 - You may also want to angle some bounce cards on the ground in front of your model to lessen the bottom shadows. I use a basic mesh plane with `Properties > Object Properties > Visibility > Ray Visibility > Camera` and `Glossy` turned off.
+
+## Mentions
+- [Architecture Topics: 10 Best Free Blender ADD-ONS!](https://www.youtube.com/watch?v=QJnB6LRtpxA&t=173s)
+- [Architecture Topics: Best Glass Material in Blender (Tutorial)](https://www.youtube.com/watch?v=MzIreMJRhqk)
+
 <br><br>
 
 <p align="center">
