@@ -22,11 +22,11 @@ import os
 
 
 bl_info = {
-    "name": "QLE (Quick Lighting Environment)",
+    "name": "Quick Lighting Environment",
     "description": "Add Area Lights & Sets World Surface",
     "author": "Don Schnitzius",
-    "version": (1, 6, 5),
-    "blender": (2, 80, 0),
+    "version": (1, 6, 6),
+    "blender": (4, 2, 0),
     "location": "Properties > Scene",
     "warning": "",
     "doc_url": "https://github.com/don1138/blender-qle",

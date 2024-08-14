@@ -1,0 +1,11 @@
+schema_version = "1.0.0"
+id = "quick_lighting_environment"
+version = "1.6.6"
+name = "Quick Lighting Environment"
+tagline = "Adds a Basic Lighting Setup to Your Blender Scene"
+maintainer = "don1138 <don@sketchbookclub.com>"
+type = "add-on"
+website = "https://github.com/don1138/blender-qle"
+tags = ["Lighting"]
+blender_version_min = "4.2.0"
+license = ["SPDX:GPL-2.0-or-later",]
