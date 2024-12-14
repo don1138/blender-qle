@@ -3,9 +3,9 @@
   + EEVEE compatability: Set `data.color` of lights to approximate blackbody values
 
 **1.6.6** <!-- 24/08/14 -->
-  + Add `blender_manifest.toml`
-  + Publish on [extensions.blender.org](https://extensions.blender.org/add-ons/quick-lighting-environment/)
-  + Rename Add-on from **Blender QLE (Quick Lighting Environment)** to **Quick Lighting Environment** per extensions.blender.org requirements
+- Ported to [Blender Extensions](https://extensions.blender.org/add-ons/quick-lighting-environment/)
+  - Rename from `Blender QLE (Quick Lighting Environment)` to `Quick Lighting Environment`
+  - Add `blender_manifest.toml`
 
 **1.6.5** <!-- 22/12/17 -->
   + Code refactoring
