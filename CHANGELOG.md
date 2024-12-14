@@ -1,7 +1,7 @@
 **1.6.7** <!-- 24/12/14 -->
   + EEVEE compatability: Set `data.color` of lights to approximate blackbody values
   + Increase **Backdrop** width from 15m to 30m
-  + Bugfix: Attach `QLE World` to `scene.world`
+  + Bugfix: Attach **QLE World** to `scene.world`
 
 **1.6.6** <!-- 24/08/14 -->
 - Ported to [Blender Extensions](https://extensions.blender.org/add-ons/quick-lighting-environment/)
@@ -16,15 +16,15 @@
    + Bugfix: If you launch Blender and open a file with an existing **QLE** collection, deleting the collection sets the `World` to null, and causes an error when adding the collection again
 
 **1.6.3** <!-- 22/05/24 -->
-   + Change `Area_Fill` light shape to `DISK` and location Z to `8`
-   + Change `Area_Left` and `Area_Right` light dimensions to `2` x `6`
-   + Change `Backdrop` roughness to `1`
+   + Change **Area_Fill** light shape to `DISK` and location Z to `8`
+   + Change **Area_Left** and **Area_Right** light dimensions to `2` x `6`
+   + Change **Backdrop** roughness to `1`
 
 **1.6.2** <!-- 22/05/22 -->
    + Added new Light
-   + Change `QLE World`, `Area_Fill`, and `Area_Back` blackbody from `5800` to `5454` (equal energy)
-   + Change `QLE World` strength from `0` to `0.25`
-   + Change `Backdrop` color to `#808080` (neutral gray)
+   + Change **QLE World**, **Area_Fill**, and `Area_Back` blackbody from `5800` to `5454` (equal energy)
+   + Change **QLE World** strength from `0` to `0.25`
+   + Change **Backdrop** color to `#808080` (neutral gray)
    + Adjust light positions
 
 **1.6.1** <!-- 21/12/29 -->
@@ -32,10 +32,10 @@
 
 **1.6.0** <!-- 21/12/24 -->
    + Added new light `Area_Back`
-   + Set `Area_Left` blackbody to `3800` (orange tint)
-   + Set `Area_Right` blackbody to `8800` (blue tint)
+   + Set **Area_Left** blackbody to `3800` (orange tint)
+   + Set **Area_Right** blackbody to `8800` (blue tint)
    + Adjust light positions
-   + Added `Backdrop` object to scene
+   + Added **Backdrop** object to scene
    + Bugfix error messages
 
 **1.5.6** <!-- 21/07/23 -->
@@ -43,7 +43,7 @@
 
 **1.5.5** <!-- 21/07/18 -->
    + Fixed error if `scene.world.name` is not named `World`
-   + Creates new world named `QLE World` and swaps it with existing world on add/delete
+   + Creates new world named **QLE World** and swaps it with existing world on add/delete
 
 **1.5.4** <!-- 20/09/20 -->
    + Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into **QLE** collection
