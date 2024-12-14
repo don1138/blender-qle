@@ -1,3 +1,11 @@
+**1.6.7** <!-- 24/12/14 -->
+  + Bugfix: Attach `QLE World` to `World`
+  + EEVEE compatability: Set `data.color` of lights to approximate blackbody values
+
+**1.6.6** <!-- 24/08/14 -->
+  + Add `blender_manifest.toml`
+  + Publish on [extensions.blender.org](https://extensions.blender.org/add-ons/quick-lighting-environment/)
+
 **1.6.5** <!-- 22/12/17 -->
   + Code refactoring
   + PEP8 formatting
@@ -21,7 +29,7 @@
    + Bugfix Clear Collection
 
 **1.6.0** <!-- 21/12/24 -->
-   + Added new Light `Area_Back`
+   + Added new light `Area_Back`
    + Set `Area_Left` blackbody to `3800` (orange tint)
    + Set `Area_Right` blackbody to `8800` (blue tint)
    + Adjust light positions
@@ -29,52 +37,52 @@
    + Bugfix error messages
 
 **1.5.6** <!-- 21/07/23 -->
-   + Assign custom `data.name` to Lights
+   + Assign custom `data.name` to lights
 
 **1.5.5** <!-- 21/07/18 -->
-   + Fixed error if `scene.world.name` is not named "World"
-   + Creates new World named "QLE World" and swaps it with existing World on Add/Delete
+   + Fixed error if `scene.world.name` is not named `World`
+   + Creates new world named `QLE World` and swaps it with existing world on add/delete
 
 **1.5.4** <!-- 20/09/20 -->
-   + Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into QLE Collection
-   + Bugfix: Reconnect Light to Target if disconnected
-   + Add INFO Message for when Button click returns no result
+   + Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into **QLE** collection
+   + Bugfix: Reconnect light to target if disconnected
+   + Add INFO message for when button click returns no result
    + Code cleanup: Replace all TRY/EXCEPT with IF/ELSE
 
 **1.5.3** <!-- 20/09/12 -->
-   + Clear Environment: Deselect All before deleting QLE, and Purge Scene after
-   + Move Add Tracking and Add Blackbody Node into functions
+   + **Clear Environment**: Deselect all before deleting `QLE`, and purge scene after
+   + Move **Add tracking** and **Add blackbody node** into functions
    + Code cleanup
 
 **1.5.2** <!-- 20/08/30 -->
-   + Change category to ``Lighting``
+   + Change category to `Lighting`
    + Add Wiki URL
-   + Rename script to ``quick_lighting_environment.py``.
+   + Rename script to `quick_lighting_environment.py`
 
 **1.5.1** <!-- 20/08/22 -->
-   + Set light Blackbody to ``5800``, more accurate Sun temperature.
+   + Set light blackbody to `5800`, more accurate Sun temperature
 
 **1.5** <!-- 20/07/19 -->
-   + Set Lights Blackbody to ``6000``
-   + Arrange Lights Nodes
-   + Code cleanup.
+   + Set lights blackbody to `6000`
+   + Arrange lights nodes
+   + Code cleanup
 
 **1.4** <!-- 20/06/29 -->
-   + Error handling for clicking Add Environment multple times, or Clear Environment when there is no QLE in Scene
-   + Removed **Clear All** button.
+   + Error handling for clicking **Add Environment** multiple times, or **Clear Environment** when there is no `QLE` in Scene
+   + Removed **Clear All** button
 
 **1.3** <!-- 20/06/17 -->
-   + Move Lights and Empty into new Collection
-   + Refactor Clear Environment
-   + Add "Clear All Lights & Empties" as temp fix for Error Handling
+   + Move lights and empty into new collection
+   + Refactor **Clear Environment**
+   + Add **Clear All Lights & Empties** as temp fix for error handling
 
 **1.2** <!-- 20/06/17 -->
-   + Add Icons to Buttons
-   + Refactor Register/Unregister
+   + Add icons to buttons
+   + Refactor register/unregister
 
 **1.1** <!-- 20/03/21 -->
-   + Enable Nodes on all Lights
-   + Add Blackbody Converter set to ``5000`` (daylight-ish) to Emission Shaders
+   + Enable nodes on all lights
+   + Add blackbody node set to `5000` (daylight-ish) to **Emission** shaders
 
 **1.0** <!-- 20/02/24 -->
    + Create Add-on

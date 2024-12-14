@@ -25,7 +25,7 @@ bl_info = {
     "name": "Quick Lighting Environment",
     "description": "Add Area Lights & Sets World Surface",
     "author": "Don Schnitzius",
-    "version": (1, 6, 6),
+    "version": (1, 6, 7),
     "blender": (4, 2, 0),
     "location": "Properties > Scene",
     "warning": "",
@@ -161,7 +161,7 @@ def btn_01(self, context):
         qle_world.node_tree.nodes["Background"].inputs[1].default_value = 0.25
     else:
         make_world()
-        scene.world = qle_world
+        scene.world = bpy.data.worlds.get("QLE World")
 
 #    ADJUST EXPOSURE
     # scene.view_settings.exposure = 0.2
@@ -182,6 +182,7 @@ def btn_01(self, context):
         ar_track = add_track_to(area_right, 'Area_Right')
     else:
         area_right = add_light((5, -5, 5), 'Area_Right', 'RECTANGLE', 100, 2, 6)
+        area_right.data.color = (0.456408, 0.584079, 1)
         bpy.data.lights["Area_Right"].node_tree.nodes["Blackbody"].inputs[0].default_value = 20000
 
 #    ADD AREA LIGHT LEFT
@@ -189,6 +190,7 @@ def btn_01(self, context):
         al_track = add_track_to(area_left, 'Area_Left')
     else:
         area_left = add_light((-5, -5, 5), 'Area_Left', 'RECTANGLE', 100, 2, 6)
+        area_left.data.color = (1, 0.658376, 0.376262)
         bpy.data.lights["Area_Left"].node_tree.nodes["Blackbody"].inputs[0].default_value = 3800
 
 #    ADD AREA LIGHT FILL
@@ -196,12 +198,14 @@ def btn_01(self, context):
         af_track = add_track_to(area_fill, 'Area_Fill')
     else:
         area_fill = add_light((0, 0, 8), 'Area_Fill', 'DISK', 800, 8, 8)
+        area_fill.data.color = (1, 0.863158, 0.768152)
 
 #    ADD AREA LIGHT BACK
     if area_back := bpy.data.objects.get("Area_Back"):
         ab_track = add_track_to(area_back, 'Area_Back')
     else:
         area_back = add_light((0, 5, 5), 'Area_Back', 'RECTANGLE', 100, 8, 1)
+        area_back.data.color = (1, 0.863158, 0.768152)
         add_backdrop()
 
     self.report({'INFO'}, "QLE added to Scene")
