@@ -1,5 +1,6 @@
 **1.6.7** <!-- 24/12/14 -->
   + EEVEE compatability: Set `data.color` of lights to approximate blackbody values
+  + Increase **Backdrop** width from 15m to 30m
   + Bugfix: Attach `QLE World` to `World`
 
 **1.6.6** <!-- 24/08/14 -->
