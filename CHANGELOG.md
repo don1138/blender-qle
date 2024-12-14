@@ -5,6 +5,7 @@
 **1.6.6** <!-- 24/08/14 -->
   + Add `blender_manifest.toml`
   + Publish on [extensions.blender.org](https://extensions.blender.org/add-ons/quick-lighting-environment/)
+  + Rename Add-on from **Blender QLE (Quick Lighting Environment)** to **Quick Lighting Environment** per extensions.blender.org requirements
 
 **1.6.5** <!-- 22/12/17 -->
   + Code refactoring
