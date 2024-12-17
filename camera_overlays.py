@@ -2,7 +2,7 @@ bl_info = {
     "name"       : "Camera Overlays",
     "description": "Show/Hide Harmony and Golden Ratios and Triangles",
     "author"     : "Don Schnitzius",
-    "version"    : (1, 2, 2),
+    "version"    : (1, 2, 3),
     "blender"    : (3, 0, 0),
     "location"   : "Context Menu (Right Mouse Button)",
     "warning"    : "",
@@ -12,8 +12,30 @@ bl_info = {
     "category"   : "Camera",
 }
 
-
 import bpy
+
+
+def is_camera_view_active(context):
+    """
+    Check if the current context is in the 3D View and the perspective is set to CAMERA.
+    """
+    area = context.area
+    if area and area.type == 'VIEW_3D':
+        region_3d = area.spaces.active.region_3d
+        if region_3d and region_3d.view_perspective == 'CAMERA':
+            return True
+    return False
+
+
+def toggle_properties(obj, props_to_toggle):
+    """
+    Toggle the specified boolean properties on the given object.
+    The new state is the opposite of the first property's current value.
+    """
+    current_state = getattr(obj, props_to_toggle[0])
+    new_state = not current_state
+    for prop in props_to_toggle:
+        setattr(obj, prop, new_state)
 
 
 class CAMERA_SCC_overlays(bpy.types.Operator):
@@ -22,21 +44,16 @@ class CAMERA_SCC_overlays(bpy.types.Operator):
     bl_label = "Show Center Overlays"
     bl_options = {'REGISTER', 'UNDO'}
 
-#    @classmethod
-#    def poll(cls, context):
-#        ob = bpy.context.active_object
-#        return ob and ob.type == 'CAMERA'
+    @classmethod
+    def poll(cls, context):
+        return (context.scene and context.scene.camera and
+                context.scene.camera.type == 'CAMERA' and
+                is_camera_view_active(context))
 
     def execute(self, context):
-        ob = bpy.context.scene.camera.data
-
-        if ob.show_composition_center == False:
-            ob.show_composition_center = True
-            ob.show_composition_center_diagonal = True
-        else:
-            ob.show_composition_center = False
-            ob.show_composition_center_diagonal = False
-
+        ob = context.scene.camera.data
+        center_props = ["show_composition_center", "show_composition_center_diagonal"]
+        toggle_properties(ob, center_props)
         return {'FINISHED'}
 
 
@@ -46,24 +63,17 @@ class CAMERA_SCG_overlays(bpy.types.Operator):
     bl_label = "Show Golden Overlays"
     bl_options = {'REGISTER', 'UNDO'}
 
-#    @classmethod
-#    def poll(cls, context):
-#        ob = bpy.context.active_object
-#        return ob and ob.type == 'CAMERA'
+    @classmethod
+    def poll(cls, context):
+        return (context.scene and context.scene.camera and
+                context.scene.camera.type == 'CAMERA' and
+                is_camera_view_active(context))
 
     def execute(self, context):
-        ob = bpy.context.scene.camera.data
-
-        if ob.show_composition_golden == False:
-            self.show_golden(True, ob)
-        else:
-            self.show_golden(False, ob)
+        ob = context.scene.camera.data
+        golden_props = ["show_composition_golden", "show_composition_golden_tria_a", "show_composition_golden_tria_b"]
+        toggle_properties(ob, golden_props)
         return {'FINISHED'}
-
-    def show_golden(self, bool, ob):
-        ob.show_composition_golden = bool
-        ob.show_composition_golden_tria_a = bool
-        ob.show_composition_golden_tria_b = bool
 
 
 class CAMERA_SCH_overlays(bpy.types.Operator):
@@ -72,24 +82,17 @@ class CAMERA_SCH_overlays(bpy.types.Operator):
     bl_label = "Show Harmony Overlays"
     bl_options = {'REGISTER', 'UNDO'}
 
-#    @classmethod
-#    def poll(cls, context):
-#        ob = bpy.context.active_object
-#        return ob and ob.type == 'CAMERA'
+    @classmethod
+    def poll(cls, context):
+        return (context.scene and context.scene.camera and
+                context.scene.camera.type == 'CAMERA' and
+                is_camera_view_active(context))
 
     def execute(self, context):
-        ob = bpy.context.scene.camera.data
-
-        if ob.show_composition_thirds == False:
-            self.show_harmony(True, ob)
-        else:
-            self.show_harmony(False, ob)
+        ob = context.scene.camera.data
+        harmony_props = ["show_composition_thirds", "show_composition_harmony_tri_a", "show_composition_harmony_tri_b"]
+        toggle_properties(ob, harmony_props)
         return {'FINISHED'}
-
-    def show_harmony(self, bool, ob):
-        ob.show_composition_thirds = bool
-        ob.show_composition_harmony_tri_a = bool
-        ob.show_composition_harmony_tri_b = bool
 
 
 class CAMERA_SP_passepartout(bpy.types.Operator):
@@ -98,15 +101,16 @@ class CAMERA_SP_passepartout(bpy.types.Operator):
     bl_label = "Toggle Passepartout"
     bl_options = {'REGISTER', 'UNDO'}
 
-    # @classmethod
-    # def poll(cls, context):
-    #     ob = bpy.context.active_object
-    #     return ob and ob.type == 'CAMERA'
+    @classmethod
+    def poll(cls, context):
+        return (context.scene and context.scene.camera and
+                context.scene.camera.type == 'CAMERA' and
+                is_camera_view_active(context))
 
     def execute(self, context):
-        ob = bpy.context.scene.camera.data
-
-        ob.passepartout_alpha = 1 if ob.passepartout_alpha != 1 else 0.5
+        ob = context.scene.camera.data
+        # If passepartout_alpha is not 1.0, set it to 1.0; otherwise set to 0.5
+        ob.passepartout_alpha = 1.0 if ob.passepartout_alpha != 1.0 else 0.5
         return {'FINISHED'}
 
 
@@ -119,6 +123,10 @@ classes = [
 
 
 def draw_inmenu(self, context):
+    """
+    Append camera overlay toggle operators to the object context menu.
+    They will only appear if the poll conditions are satisfied (in camera view).
+    """
     self.layout.separator()
     self.layout.operator("camera.center_overlays",     text="Center Overlays")
     self.layout.operator("camera.golden_overlays",     text="Golden Overlays")
