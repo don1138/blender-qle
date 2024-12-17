@@ -2,7 +2,7 @@
 
 **Adds a Basic Lighting Setup to Your Blender Scene.**
 
-![Blender QLE Screenshot](https://github.com/don1138/blender-qle/blob/master/blender-qle.jpg)
+![Blender QLE Screenshot](https://github.com/don1138/blender-qle/blob/master/imx/blender-qle.jpg)
 
 ## Installation
 
