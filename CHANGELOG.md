@@ -1,3 +1,9 @@
+**1.7.1** <!-- 24/12/17 -->
+  + Code refactoring
+
+**1.7.0** <!-- 24/12/16 -->
+  + Code refactoring
+
 **1.6.7** <!-- 24/12/14 -->
   + EEVEE compatability: Set `data.color` of lights to approximate blackbody values
   + Increase **Backdrop** width from 15m to 30m

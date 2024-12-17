@@ -16,16 +16,14 @@
 #
 # ##### END GPL LICENSE BLOCK #####
 
-
 import bpy
 import os
 
-
 bl_info = {
-    "name": "Quick Lighting Environment",
+    "name": "QLE (Quick Lighting Environment)",
     "description": "Add Area Lights & Sets World Surface",
     "author": "Don Schnitzius",
-    "version": (1, 6, 7),
+    "version": (1, 7, 1),
     "blender": (4, 2, 0),
     "location": "Properties > Scene",
     "warning": "",
@@ -35,194 +33,292 @@ bl_info = {
 }
 
 
-old_world_name = ""
-# old_exposure_val = ""
+# Global state class
+class QLEState:
+    """Stores global state for the QLE add-on."""
+    def __init__(self):
+        self.old_world_name = None
+
+qle_state = QLEState()
+
+LIGHT_SETTINGS = {
+    "Area_Right": {
+        "loc": (5, -5, 5),
+        "shape": "RECTANGLE",
+        "energy": 100,
+        "size_x": 2,
+        "size_y": 6,
+        "color": (0.456, 0.584, 1),
+        "temperature": 20000
+    },
+    "Area_Left": {
+        "loc": (-5, -5, 5),
+        "shape": "RECTANGLE",
+        "energy": 100,
+        "size_x": 2,
+        "size_y": 6,
+        "color": (1, 0.658, 0.376),
+        "temperature": 3800
+    },
+    "Area_Fill": {
+        "loc": (0, 0, 8),
+        "shape": "DISK",
+        "energy": 800,
+        "size_x": 8,
+        "size_y": 8,
+        "color": (1, 0.863, 0.768),
+        "temperature": None
+    },
+    "Area_Back": {
+        "loc": (0, 5, 5),
+        "shape": "RECTANGLE",
+        "energy": 100,
+        "size_x": 8,
+        "size_y": 1,
+        "color": (1, 0.863, 0.768),
+        "temperature": None
+    },
+}
 
 
 def wo_register():
-    global old_world_name
-    old_world_name = bpy.context.scene.world.name
-    # global old_exposure_val
-    # old_exposure_val = bpy.context.scene.view_settings.exposure
+    """Registers the original world state before making changes."""
+    scene = bpy.context.scene
+    # Only record the old world name if we haven't already done so
+    if qle_state.old_world_name is None and scene.world:
+        qle_state.old_world_name = scene.world.name
 
 
-def find_collection(context, item):
-    collections = item.users_collection
-    return collections[0] if len(collections) > 0 else context.scene.collection
+def ensure_collection_exists(collection_name="QLE", parent_collection=None):
+    """Ensure that a collection with the given name exists, and return it."""
+    col = bpy.data.collections.get(collection_name)
+    if col is None:
+        if parent_collection is None:
+            parent_collection = bpy.context.scene.collection
+        col = bpy.data.collections.new(collection_name)
+        parent_collection.children.link(col)
+    return col
 
 
-def make_collection(collection_name, parent_collection):
-    if collection_name in bpy.data.collections:
-        return bpy.data.collections[collection_name]
-    new_qle_collection = bpy.data.collections.new(collection_name)
-    parent_collection.children.link(new_qle_collection)
-    return new_qle_collection
+def move_to_collection(obj, collection_name="QLE"):
+    """Ensure an object is exclusively placed in the specified collection."""
+    for c in obj.users_collection:
+        c.objects.unlink(obj)
+    target_collection = ensure_collection_exists(collection_name)
+    if obj.name not in target_collection.objects:
+        target_collection.objects.link(obj)
 
 
-def add_to_collection(item):
-    my_coll = bpy.data.collections.get("QLE")
-    qle_collection = find_collection(bpy.context, item)
-    if my_coll:
-        my_coll.objects.link(item)
-    else:
-        new_qle_collection = make_collection("QLE", qle_collection)
-        new_qle_collection.objects.link(item)
-    qle_collection.objects.unlink(item)
+def load_object_from_blend(filepath, obj_name, collection_name="QLE"):
+    """Load an object from a .blend file and place it into the specified collection."""
+    with bpy.data.libraries.load(filepath, link=False) as (data_from, data_to):
+        data_to.objects = [name for name in data_from.objects if name == obj_name]
+
+    loaded_objs = []
+    for obj in data_to.objects:
+        if obj:
+            move_to_collection(obj, collection_name)
+            loaded_objs.append(obj)
+    return loaded_objs
 
 
-def add_light(loc, name, shape, energy, size_x, size_y):
-    bpy.ops.object.light_add(type='AREA', radius=10, location=loc)
-    result = bpy.context.active_object
-    result.name = name
-    result.data.name = name
-    result.data.shape = shape
-    result.data.energy = energy
-    result.data.size = size_x
-    result.data.size_y = size_y
-    add_tracking(result)
-    add_blackbody(result)
-    add_to_collection(result)
-    return result
+def add_backdrop():
+    """Adds or ensures the Backdrop object exists and is in the QLE collection."""
+    # If the Backdrop object itself exists, just move it to QLE and return.
+    backdrop = bpy.data.objects.get("Backdrop")
+    if backdrop:
+        move_to_collection(backdrop, "QLE")
+        return
+
+    # If we don't have the Backdrop object, check if its mesh data block is already in bpy.data.meshes.
+    # Here we assume the mesh data name is "_backdrop_".
+    backdrop_mesh = bpy.data.meshes.get("_backdrop_")
+    if backdrop_mesh:
+        # If the mesh data exists, we can create a new object from it without importing again.
+        backdrop = bpy.data.objects.new("Backdrop", backdrop_mesh)
+        bpy.context.scene.collection.objects.link(backdrop)
+        move_to_collection(backdrop, "QLE")
+        return
+
+    # If the mesh isn't found, we need to load it from the external blend file.
+    filepath = os.path.join(os.path.dirname(__file__), "_backdrop.blend")
+    objs = load_object_from_blend(filepath, "Backdrop", "QLE")
 
 
-def add_tracking(item):
-    bpy.ops.object.constraint_add(type='TRACK_TO')
-    item.constraints["Track To"].track_axis = 'TRACK_NEGATIVE_Z'
-    item.constraints["Track To"].up_axis = 'UP_Y'
-    item.constraints["Track To"].target = bpy.data.objects["Lights_Target"]
+def apply_blackbody_to_light(light, temperature):
+    """Adds a Blackbody node to the light's emission if a temperature is specified."""
+    light.data.use_nodes = True
+    nodes = light.data.node_tree.nodes
+    links = light.data.node_tree.links
 
+    emission = nodes.get('Emission')
+    # Clear existing links to the emission color to avoid duplicates
+    for link in list(links):
+        if link.to_node == emission and link.to_socket == emission.inputs[0]:
+            links.remove(link)
 
-def add_track_to(ident, name):
-    result = ident.constraints.get("Track To")
-    result.target = bpy.data.objects["Lights_Target"]
-    if result is None:
-        add_tracking(ident)
-    print(f"{name} already in collection")
-    return result
-
-
-def add_blackbody(item):
-    item.data.use_nodes = True
-    light = bpy.context.active_object.data
-    nodes = light.node_tree.nodes
-    lights_output = nodes.get('Light Output')
-    lights_output.location = 0, 0
-    node_ox = nodes.get('Emission')
-    node_ox.location = -200, 0
-    links = light.node_tree.links
     node_bb = nodes.new(type="ShaderNodeBlackbody")
-    node_bb.inputs[0].default_value = 5454
-    node_bb.location = -400, 0
-    link = links.new(node_bb.outputs[0], node_ox.inputs[0])
+    node_bb.location = (-400, 0)
+    node_bb.inputs[0].default_value = temperature
+    links.new(node_bb.outputs[0], emission.inputs[0])
 
 
-def make_world():
-    qle_world = bpy.data.worlds.new("QLE World")
-    qle_world.use_nodes = True
-    world_wo = qle_world.node_tree.nodes.get('World Output')
-    world_wo.location = (0, 0)
-    world_bg = qle_world.node_tree.nodes.get('Background')
-    world_bg.inputs[1].default_value = 0.25
-    world_bg.location = (-200, 0)
-    world_bb = qle_world.node_tree.nodes.new('ShaderNodeBlackbody')
-    world_bb.inputs[0].default_value = 5454
-    world_bb.location = (-400, 0)
-    qle_world.node_tree.links.new(world_bb.outputs[0], world_bg.inputs[0])
+def create_empty(name, location):
+    """Creates an empty object directly."""
+    empty = bpy.data.objects.new(name=name, object_data=None)
+    empty.empty_display_type = 'PLAIN_AXES'
+    empty.location = location
+    bpy.context.scene.collection.objects.link(empty)
+    return empty
 
 
-def also_make_world(self, scene):
-    new_world = bpy.data.worlds.new("World")
-    new_world.use_nodes = True
-    world_wo = new_world.node_tree.nodes.get('World Output')
-    world_wo.location = (0, 0)
-    world_bg = new_world.node_tree.nodes.get('Background')
-    world_bg.location = (-200, 0)
-    scene.world = new_world
+def create_and_configure_light(name, settings):
+    """Create or reconfigure a single light based on provided settings."""
+    light = bpy.data.objects.get(name)
+    if not light:
+        light_data = bpy.data.lights.new(name=name, type='AREA')
+        light = bpy.data.objects.new(name, light_data)
+        light.location = settings["loc"]
+        light_data.shape = settings["shape"]
+        light_data.energy = settings["energy"]
+        light_data.size = settings["size_x"]
+        light_data.size_y = settings["size_y"]
+        light_data.color = settings["color"]
+        bpy.context.scene.collection.objects.link(light)
+
+        if settings["temperature"]:
+            apply_blackbody_to_light(light, settings["temperature"])
+
+    move_to_collection(light, "QLE")
+    return light
 
 
-def clear_objects():
-    bpy.ops.object.select_all(action='DESELECT')
-    bpy.data.objects["Area_Back"].select_set(True)
-    bpy.data.objects["Area_Fill"].select_set(True)
-    bpy.data.objects["Area_Left"].select_set(True)
-    bpy.data.objects["Area_Right"].select_set(True)
-    bpy.data.objects["Lights_Target"].select_set(True)
-    bpy.data.objects["Backdrop"].select_set(True)
-    bpy.ops.object.delete(use_global=True)
+def setup_tracking(light, target):
+    """Adds a Track To constraint to a light object to track the given target object."""
+    bpy.context.view_layer.objects.active = light
+    # Remove old TRACK_TO constraints if they exist
+    for c in light.constraints:
+        if c.type == 'TRACK_TO':
+            light.constraints.remove(c)
+
+    track = light.constraints.new(type='TRACK_TO')
+    track.track_axis = 'TRACK_NEGATIVE_Z'
+    track.up_axis = 'UP_Y'
+    track.target = target
+
+
+def setup_environment_lights():
+    """Set up all lights and their target."""
+    target = bpy.data.objects.get("Lights_Target")
+    if not target:
+        target = create_empty("Lights_Target", (0, 0, 1))
+    move_to_collection(target, "QLE")
+
+    for name, settings in LIGHT_SETTINGS.items():
+        light = create_and_configure_light(name, settings)
+        setup_tracking(light, target)
+
+
+def create_world(world_name, bg_strength=0.25, temperature=5454):
+    """Creates a new world with a blackbody-based background."""
+    world = bpy.data.worlds.new(world_name)
+    world.use_nodes = True
+    nodes = world.node_tree.nodes
+    links = world.node_tree.links
+
+    world_output = nodes.get('World Output')
+    background = nodes.get('Background')
+    blackbody = nodes.new('ShaderNodeBlackbody')
+
+    blackbody.inputs[0].default_value = temperature
+    background.inputs[1].default_value = bg_strength
+
+    links.new(blackbody.outputs[0], background.inputs[0])
+    return world
+
+
+def delete_objects(objects_to_delete):
+    """Deletes objects directly from bpy.data."""
+    for obj in objects_to_delete:
+        bpy.data.objects.remove(obj, do_unlink=True)
+
+
+def clear_objects_safe(object_names):
+    """Safely clears objects from the scene if they exist."""
+    objects_to_delete = [bpy.data.objects.get(name) for name in object_names if bpy.data.objects.get(name)]
+    delete_objects(objects_to_delete)
+
+
+def setup_qle_environment():
+    """Fully sets up the QLE environment including world, lights, and backdrop."""
+    scene = bpy.context.scene
+    wo_register()
+
+    # Ensure QLE collection
+    ensure_collection_exists("QLE", scene.collection)
+
+    # Create/Assign QLE World
+    qle_world = bpy.data.worlds.get("QLE World")
+    if not qle_world:
+        qle_world = create_world("QLE World")
+    scene.world = qle_world
+
+    # Setup lights and backdrop
+    setup_environment_lights()
+    add_backdrop()
+
+
+def clear_qle_environment():
+    """Clears the QLE environment, including removing QLE world and lights."""
+    scene = bpy.context.scene
+
+    # Clear QLE objects
+    to_delete = list(LIGHT_SETTINGS.keys()) + ["Lights_Target", "Backdrop"]
+    clear_objects_safe(to_delete)
+
+    # Remove QLE collection
+    qle_col = bpy.data.collections.get('QLE')
+    if qle_col:
+        bpy.data.collections.remove(qle_col)
+
+    # Handle QLE world removal
+    qle_world = bpy.data.worlds.get("QLE World")
+    if qle_world:
+        # Resetting background strength (optional)
+        background_node = qle_world.node_tree.nodes.get("Background")
+        if background_node:
+            background_node.inputs[1].default_value = 1
+
+        # Unlink QLE World from all scenes
+        for s in bpy.data.scenes:
+            if s.world == qle_world:
+                # Try restoring old world or default
+                old_world = bpy.data.worlds.get(qle_state.old_world_name) if qle_state.old_world_name else None
+                s.world = old_world or bpy.data.worlds.get("World") or create_world("World")
+
+        # Remove QLE World after unlinking
+        bpy.data.worlds.remove(qle_world, do_unlink=True)
+
+    # Ensure scene has a valid world
+    if not scene.world:
+        scene.world = bpy.data.worlds.get("World") or create_world("World")
+
+    # Purge orphaned data
+    bpy.ops.outliner.orphans_purge(do_local_ids=True, do_linked_ids=True, do_recursive=True)
 
 
 def btn_01(self, context):
-
-    scene = bpy.context.scene
-    wo_register()
-    # print(old_world_name, old_exposure_val)
-    if qle_world := bpy.data.worlds.get("QLE World"):
-        scene.world = qle_world
-        qle_world.node_tree.nodes["Background"].inputs[1].default_value = 0.25
-    else:
-        make_world()
-        scene.world = bpy.data.worlds.get("QLE World")
-
-#    ADJUST EXPOSURE
-    # scene.view_settings.exposure = 0.2
-    if area_target := bpy.data.objects.get("Lights_Target"):
-        print("Lights_Target already in collection")
-        self.report({'INFO'}, "QLE already in Scene")
-
-    else:
-        bpy.ops.object.empty_add(type='PLAIN_AXES', location=(0, 0, 1))
-        area_target = bpy.context.active_object
-        bpy.context.active_object.name = "Lights_Target"
-
-#    ADD TO COLLECTION
-        add_to_collection(area_target)
-
-#    ADD AREA LIGHT RIGHT
-    if area_right := bpy.data.objects.get("Area_Right"):
-        ar_track = add_track_to(area_right, 'Area_Right')
-    else:
-        area_right = add_light((5, -5, 5), 'Area_Right', 'RECTANGLE', 100, 2, 6)
-        area_right.data.color = (0.456408, 0.584079, 1)
-        bpy.data.lights["Area_Right"].node_tree.nodes["Blackbody"].inputs[0].default_value = 20000
-
-#    ADD AREA LIGHT LEFT
-    if area_left := bpy.data.objects.get("Area_Left"):
-        al_track = add_track_to(area_left, 'Area_Left')
-    else:
-        area_left = add_light((-5, -5, 5), 'Area_Left', 'RECTANGLE', 100, 2, 6)
-        area_left.data.color = (1, 0.658376, 0.376262)
-        bpy.data.lights["Area_Left"].node_tree.nodes["Blackbody"].inputs[0].default_value = 3800
-
-#    ADD AREA LIGHT FILL
-    if area_fill := bpy.data.objects.get("Area_Fill"):
-        af_track = add_track_to(area_fill, 'Area_Fill')
-    else:
-        area_fill = add_light((0, 0, 8), 'Area_Fill', 'DISK', 800, 8, 8)
-        area_fill.data.color = (1, 0.863158, 0.768152)
-
-#    ADD AREA LIGHT BACK
-    if area_back := bpy.data.objects.get("Area_Back"):
-        ab_track = add_track_to(area_back, 'Area_Back')
-    else:
-        area_back = add_light((0, 5, 5), 'Area_Back', 'RECTANGLE', 100, 8, 1)
-        area_back.data.color = (1, 0.863158, 0.768152)
-        add_backdrop()
+    """Button action to set up QLE environment."""
+    setup_qle_environment()
 
     self.report({'INFO'}, "QLE added to Scene")
 
 
-def add_backdrop():
-    #    ADD BACKDROP OBJECT
-    filepath = os.path.join(os.path.dirname(__file__), "_backdrop.blend")
-    obj_name = "Backdrop"
-    link = False
-    with bpy.data.libraries.load(filepath, link=link) as (data_from, data_to):
-        data_to.objects = [
-            name for name in data_from.objects if name.startswith(obj_name)]
-    for obj in data_to.objects:
-        if obj is not None:
-            bpy.context.collection.objects.link(obj)
-            add_to_collection(obj)
+def btn_02(self, context):
+    """Button action to clear QLE environment."""
+    clear_qle_environment()
+
+    self.report({'INFO'}, "QLE removed from Scene")
 
 
 class AddLights(bpy.types.Operator):
@@ -233,41 +329,6 @@ class AddLights(bpy.types.Operator):
     def execute(self, context):
         btn_01(self, context)
         return {'FINISHED'}
-
-
-def btn_02(self, context):
-
-    scene = bpy.context.scene
-    old_world = bpy.data.worlds.get(old_world_name)
-
-#    CLEAR OBJECTS
-    try:
-        clear_objects()
-        self.report({'INFO'}, "QLE removed from Scene")
-    except KeyError:
-        # print(f"One or more objects don't exist")
-        self.report({'INFO'}, "QLE not in Scene")
-
-#    CLEAR COLLECTION
-    if qle_col := bpy.data.collections.get('QLE'):
-        bpy.data.collections.remove(qle_col)
-
-#    RESET WORLD SURFACE STRENGTH
-    qle_world = bpy.data.worlds.get("QLE World")
-    default_world = bpy.data.worlds.get("World")
-    if qle_world:
-        qle_world.node_tree.nodes["Background"].inputs[1].default_value = 1
-        if old_world:
-            scene.world = old_world
-        elif default_world:
-            scene.world = default_world
-        else:
-            self.also_make_world(scene)
-            # scene.view_settings.exposure = old_exposure_val
-
-#    PURGE SCENE
-    bpy.ops.outliner.orphans_purge(
-        do_local_ids=True, do_linked_ids=True, do_recursive=True)
 
 
 class ClearLights(bpy.types.Operator):
@@ -281,7 +342,7 @@ class ClearLights(bpy.types.Operator):
 
 
 class LayoutLightsPanel(bpy.types.Panel):
-    """Creates a Panel in the scene context of the properties editor"""
+    """Creates a Panel in the scene context of the properties editor."""
     bl_label = "Quick Lighting Environment"
     bl_idname = "SCENE_PT_quickEnvironment"
     bl_space_type = 'PROPERTIES'
@@ -290,13 +351,9 @@ class LayoutLightsPanel(bpy.types.Panel):
 
     def draw(self, context):
         layout = self.layout
-
-        # Add Environment button
         row = layout.row()
         row.scale_y = 1.5
         row.operator(AddLights.bl_idname, icon='ADD')
-
-        # Clear Environment button
         row = layout.row()
         row.scale_y = 1.5
         row.operator(ClearLights.bl_idname, icon='REMOVE')
@@ -315,7 +372,7 @@ def register():
 
 
 def unregister():
-    for cls in _classes:
+    for cls in reversed(_classes):
         bpy.utils.unregister_class(cls)
 
 
