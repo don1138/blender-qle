@@ -1,6 +1,6 @@
 bl_info = {
-    "name"       : "Camera Overlays",
-    "description": "Show/Hide Harmony and Golden Ratios and Triangles",
+    "name"       : "QCO (QuickCamera Overlays)",
+    "description": "Show/Hide Center, Harmony, and Golden Ratio Camera Overlays",
     "author"     : "Don Schnitzius",
     "version"    : (1, 2, 3),
     "blender"    : (3, 0, 0),
