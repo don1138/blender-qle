@@ -1,6 +1,6 @@
 **1.8.0** <!-- 25/10/30 -->
-- Remove Blackbody nodes from lights
-  - Light color updates introduced in version 1.6.7 for EEVEE compatibility caused incorrect results when multiplied by Blackbody output.
+- Remove `Blackbody` nodes from lights
+  - Light color updates introduced in version 1.6.7 for EEVEE compatibility caused incorrect results when multiplied by `Blackbody` output.
 
 **1.7.1** <!-- 24/12/17 -->
 - Code refactoring
