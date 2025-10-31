@@ -23,7 +23,7 @@ bl_info = {
     "name": "QLE (Quick Lighting Environment)",
     "description": "Add Area Lights & Sets World Surface",
     "author": "Don Schnitzius",
-    "version": (1, 7, 1),
+    "version": (1, 8, 0),
     "blender": (4, 2, 0),
     "location": "Properties > Scene",
     "warning": "",
@@ -48,8 +48,8 @@ LIGHT_SETTINGS = {
         "energy": 100,
         "size_x": 2,
         "size_y": 6,
-        "color": (0.456, 0.584, 1),
-        "temperature": 20000
+        "color": (0.407237, 0.564712, 1), #3800
+        "temperature": None
     },
     "Area_Left": {
         "loc": (-5, -5, 5),
@@ -57,8 +57,8 @@ LIGHT_SETTINGS = {
         "energy": 100,
         "size_x": 2,
         "size_y": 6,
-        "color": (1, 0.658, 0.376),
-        "temperature": 3800
+        "color": (1, 0.584079, 0.337164), #20,000
+        "temperature": None
     },
     "Area_Fill": {
         "loc": (0, 0, 8),
@@ -66,7 +66,7 @@ LIGHT_SETTINGS = {
         "energy": 800,
         "size_x": 8,
         "size_y": 8,
-        "color": (1, 0.863, 0.768),
+        "color": (1, 0.846874, 0.723055), #5454
         "temperature": None
     },
     "Area_Back": {
@@ -75,7 +75,7 @@ LIGHT_SETTINGS = {
         "energy": 100,
         "size_x": 8,
         "size_y": 1,
-        "color": (1, 0.863, 0.768),
+        "color": (1, 0.846874, 0.723055), #5454
         "temperature": None
     },
 }
@@ -226,7 +226,6 @@ def create_world(world_name, bg_strength=0.25, temperature=5454):
     nodes = world.node_tree.nodes
     links = world.node_tree.links
 
-    world_output = nodes.get('World Output')
     background = nodes.get('Background')
     blackbody = nodes.new('ShaderNodeBlackbody')
 
