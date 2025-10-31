@@ -49,6 +49,7 @@ This addon creates a panel named **Quick Lighting Environment** under `Propertie
 - [Architecture Topics: Best Glass Material in Blender (Tutorial)](https://www.youtube.com/watch?v=MzIreMJRhqk)
 - [Jinxxy.com](https://jinxxy.com/market/browse?search_query=Quick+Metal+Materials&listing=3449245791745476435)
 - [Architecture Topics: BEST Free Lighting Addons for Blender 2024](https://youtu.be/nojuev0F1_w)
+- [Quick Lighting Environment (QLE) Addon for Blender | Free Studio Light Just ONE CLICK | Graphskill](https://www.youtube.com/watch?v=8RnYfONirUQ)
 
 <br><br>
 
@@ -58,4 +59,3 @@ This addon creates a panel named **Quick Lighting Environment** under `Propertie
   <img alt="Github all releases" src="https://img.shields.io/github/downloads/don1138/blender-qle/total.svg"><br>
   <img src="https://repobeats.axiom.co/api/embed/e7313fc8115e168686e43e209cb5138dbb64f20a.svg" alt="Repobeats analytics image">
 </p>
-
