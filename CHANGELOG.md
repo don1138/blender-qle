@@ -1,100 +1,229 @@
-**1.8.0** <!-- 25/10/30 -->
-- Remove `Blackbody` nodes from lights
-  - Light color updates introduced in version 1.6.7 for EEVEE compatibility caused incorrect results when multiplied by `Blackbody` output.
+# Changelog
 
-**1.7.1** <!-- 24/12/17 -->
-- Code refactoring
+All notable changes to this project will be documented in this file.
 
-**1.7.0** <!-- 24/12/16 -->
-- Code refactoring
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-**1.6.7** <!-- 24/12/14 -->
-- EEVEE compatability: Set `data.color` of lights to approximate blackbody values
-- Increase **Backdrop** width from 15m to 30m
-- Bugfix: Attach **QLE World** to `scene.world`
+## [1.8.0] - 2025-10-30
 
-**1.6.6** <!-- 24/08/14 -->
+### Removed
+
+- Removed `Blackbody` nodes from lights
+  - Light color updates introduced in version 1.6.7 for EEVEE compatibility caused incorrect results when multiplied by `Blackbody` output
+
+## [1.7.1] - 2024-12-17
+
+### Changed
+
+- Refactored code
+
+## 1.7.0 - 2024-12-16
+
+### Changed
+
+- Refactored code
+
+## [1.6.7] - 2024-12-14
+
+### Changed
+
+- Added EEVEE compatibility by setting `data.color` of lights to approximate blackbody values
+- Increased **Backdrop** width from 15 m to 30 m
+
+### Fixed
+
+- Fixed **QLE World** attachment to `scene.world`
+
+## [1.6.6] - 2024-08-14
+
+### Added
+
+- Added `blender_manifest.toml`
+
+### Changed
+
 - Ported to [Blender Extensions](https://extensions.blender.org/add-ons/quick-lighting-environment/)
-  - Rename from `Blender QLE (Quick Lighting Environment)` to `Quick Lighting Environment`
-  - Add `blender_manifest.toml`
+- Renamed **Blender QLE (Quick Lighting Environment)** to **Quick Lighting Environment**
 
-**1.6.5** <!-- 22/12/17 -->
-- Code refactoring
-- PEP8 formatting
+## [1.6.5] - 2022-12-17
 
-**1.6.4** <!-- 22/05/27 -->
-- Bugfix: If you launch Blender and open a file with an existing **QLE** collection, deleting the collection sets the `World` to null, and causes an error when adding the collection again
+### Changed
 
-**1.6.3** <!-- 22/05/24 -->
-- Change **Area_Fill** light shape to `DISK` and location Z to `8`
-- Change **Area_Left** and **Area_Right** light dimensions to `2` x `6`
-- Change **Backdrop** roughness to `1`
+- Refactored code
+- Applied PEP 8 formatting
 
-**1.6.2** <!-- 22/05/22 -->
-- Added new Light
-- Change **QLE World**, **Area_Fill**, and `Area_Back` blackbody from `5800` to `5454` (equal energy)
-- Change **QLE World** strength from `0` to `0.25`
-- Change **Backdrop** color to `#808080` (neutral gray)
-- Adjust light positions
+## [1.6.4] - 2022-05-27
 
-**1.6.1** <!-- 21/12/29 -->
-- Bugfix Clear Collection
+### Fixed
 
-**1.6.0** <!-- 21/12/24 -->
+- Fixed an error when opening a file with an existing **QLE** collection, deleting the collection, and then adding it again after `World` had been set to null
+
+## [1.6.3] - 2022-05-24
+
+### Changed
+
+- Changed **Area_Fill** light shape to `DISK` and Z location to `8`
+- Changed **Area_Left** and **Area_Right** light dimensions to `2 × 6`
+- Changed **Backdrop** roughness to `1`
+
+## [1.6.2] - 2022-05-22
+
+### Added
+
+- Added a new light
+
+### Changed
+
+- Changed **QLE World**, **Area_Fill**, and **Area_Back** blackbody from `5800` to `5454` for equal energy
+- Changed **QLE World** strength from `0` to `0.25`
+- Changed **Backdrop** color to `#808080` neutral gray
+- Adjusted light positions
+
+## [1.6.1] - 2021-12-29
+
+### Fixed
+
+- Fixed **Clear Collection**
+
+## [1.6.0] - 2021-12-24
+
+### Added
+
 - Added new light `Area_Back`
-- Set **Area_Left** blackbody to `3800` (orange tint)
-- Set **Area_Right** blackbody to `8800` (blue tint)
-- Adjust light positions
-- Added **Backdrop** object to scene
-- Bugfix error messages
+- Added **Backdrop** object to the scene
 
-**1.5.6** <!-- 21/07/23 -->
-- Assign custom `data.name` to lights
+### Changed
 
-**1.5.5** <!-- 21/07/18 -->
-- Fixed error if `scene.world.name` is not named `World`
-- Creates new world named **QLE World** and swaps it with existing world on add/delete
+- Set **Area_Left** blackbody to `3800` for an orange tint
+- Set **Area_Right** blackbody to `8800` for a blue tint
+- Adjusted light positions
 
-**1.5.4** <!-- 20/09/20 -->
-- Bugfix: When a QLE object is manually deleted and then re-added, it doesn't link back into **QLE** collection
-- Bugfix: Reconnect light to target if disconnected
-- Add INFO message for when button click returns no result
-- Code cleanup: Replace all TRY/EXCEPT with IF/ELSE
+### Fixed
 
-**1.5.3** <!-- 20/09/12 -->
-- **Clear Environment**: Deselect all before deleting `QLE`, and purge scene after
-- Move **Add tracking** and **Add blackbody node** into functions
-- Code cleanup
+- Fixed error messages
 
-**1.5.2** <!-- 20/08/30 -->
-- Change category to `Lighting`
-- Add Wiki URL
-- Rename script to `quick_lighting_environment.py`
+## [1.5.6] - 2021-07-23
 
-**1.5.1** <!-- 20/08/22 -->
-- Set light blackbody to `5800`, more accurate Sun temperature
+### Changed
 
-**1.5** <!-- 20/07/19 -->
-- Set lights blackbody to `6000`
-- Arrange lights nodes
-- Code cleanup
+- Assigned custom `data.name` values to lights
 
-**1.4** <!-- 20/06/29 -->
-- Error handling for clicking **Add Environment** multiple times, or **Clear Environment** when there is no `QLE` in Scene
+## [1.5.5] - 2021-07-18
+
+### Added
+
+- Added creation of a new world named **QLE World**, which is swapped with the existing world when adding or deleting the environment
+
+### Fixed
+
+- Fixed an error when `scene.world.name` is not named `World`
+
+## [1.5.4] - 2020-09-20
+
+### Added
+
+- Added an INFO message when a button click returns no result
+
+### Changed
+
+- Replaced `try`/`except` blocks with `if`/`else`
+
+### Fixed
+
+- Fixed QLE objects failing to relink to the **QLE** collection after manual deletion and re-adding
+- Fixed light tracking failing to reconnect after being disconnected
+
+## [1.5.3] - 2020-09-12
+
+### Changed
+
+- Updated **Clear Environment** to deselect all objects before deleting `QLE`, then purge the scene
+- Moved **Add tracking** and **Add blackbody node** into functions
+- Cleaned up code
+
+## [1.5.2] - 2020-08-30
+
+### Added
+
+- Added Wiki URL
+
+### Changed
+
+- Changed category to `Lighting`
+- Renamed script to `quick_lighting_environment.py`
+
+## 1.5.1 - 2020-08-22
+
+### Changed
+
+- Set light blackbody to `5800` for a more accurate Sun temperature
+
+## [1.5] - 2020-07-19
+
+### Changed
+
+- Set light blackbody to `6000`
+- Arranged light nodes
+- Cleaned up code
+
+## 1.4 - 2020-06-29
+
+### Added
+
+- Added error handling for clicking **Add Environment** multiple times
+- Added error handling for clicking **Clear Environment** when no `QLE` exists in the scene
+
+### Removed
+
 - Removed **Clear All** button
 
-**1.3** <!-- 20/06/17 -->
-- Move lights and empty into new collection
-- Refactor **Clear Environment**
-- Add **Clear All Lights & Empties** as temp fix for error handling
+## 1.3 - 2020-06-17
 
-**1.2** <!-- 20/06/17 -->
-- Add icons to buttons
-- Refactor register/unregister
+### Added
 
-**1.1** <!-- 20/03/21 -->
-- Enable nodes on all lights
-- Add blackbody node set to `5000` (daylight-ish) to **Emission** shaders
+- Added temporary **Clear All Lights & Empties** option for error handling
 
-**1.0** <!-- 20/02/24 -->
-- Create Add-on
+### Changed
+
+- Moved lights and empty into a new collection
+- Refactored **Clear Environment**
+
+## 1.2 - 2020-06-17
+
+### Added
+
+- Added icons to buttons
+
+### Changed
+
+- Refactored register/unregister
+
+## 1.1 - 2020-03-21
+
+### Added
+
+- Enabled nodes on all lights
+- Added a `Blackbody` node set to `5000` to **Emission** shaders
+
+## 1.0 - 2020-02-24
+
+### Added
+
+- Initial add-on
+
+[1.8.0]: https://github.com/don1138/blender-qle/releases/tag/v1.8.0
+[1.7.1]: https://github.com/don1138/blender-qle/releases/tag/v1.7.1
+[1.6.7]: https://github.com/don1138/blender-qle/releases/tag/v1.6.7
+[1.6.6]: https://github.com/don1138/blender-qle/releases/tag/v1.6.6
+[1.6.5]: https://github.com/don1138/blender-qle/releases/tag/v1.6.5
+[1.6.4]: https://github.com/don1138/blender-qle/releases/tag/v1.6.4
+[1.6.3]: https://github.com/don1138/blender-qle/releases/tag/v1.6.3
+[1.6.2]: https://github.com/don1138/blender-qle/releases/tag/v.1.6.2
+[1.6.1]: https://github.com/don1138/blender-qle/releases/tag/v1.6.1
+[1.6.0]: https://github.com/don1138/blender-qle/releases/tag/v1.6.0
+[1.5.6]: https://github.com/don1138/blender-qle/releases/tag/1.5.6
+[1.5.5]: https://github.com/don1138/blender-qle/releases/tag/1.5.5
+[1.5.4]: https://github.com/don1138/blender-qle/releases/tag/1.5.4
+[1.5.3]: https://github.com/don1138/blender-qle/releases/tag/1.5.3
+[1.5.2]: https://github.com/don1138/blender-qle/releases/tag/1.5.2
+[1.5]: https://github.com/don1138/blender-qle/releases/tag/1.5
