@@ -26,7 +26,7 @@ bl_info = {
     "name": "QLE (Quick Lighting Environment)",
     "description": "Add Area Lights & Sets World Surface",
     "author": "Don Schnitzius",
-    "version": (2, 0, 7),
+    "version": (2, 0, 8),
     "blender": (4, 5, 0),
     "location": "3D Viewport > Sidebar > Quick Tools",
     "doc_url": "https://github.com/don1138/blender-qle",

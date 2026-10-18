@@ -25,7 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Persistent scene-local ownership and World restoration replace name-based deletion and transient global state. Cleanup no longer runs a broad orphan purge.
 - Recognizable legacy setups can be adopted without resetting their appearance; missing original-World history is reported rather than guessed.
 
-This development branch is not yet packaged or released. Visual UI, interactive Undo/confirmation, and packaged installation checks remain pending.
+This development branch is packaged for owner testing but is not released. Earlier candidates passed focused runtime checks; the current QLS-style revision and latest package still require final runtime validation.
 
 ## [1.8.0] - 2025-10-30
 

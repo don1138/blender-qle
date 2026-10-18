@@ -147,7 +147,7 @@ Only show the active color mode's fields. Square/Disk expose one Size; Rectangle
 - Kelvin uses the selected temperature with a white RGB multiplier. No Tint field; a saved blue RGB color must not contaminate Kelvin.
 - Switching back to RGB restores the previous RGB color. Switching back to Kelvin restores the previous Kelvin setting.
 - Reuse QLS's 19 temperature presets, grouping, values, labels, and descriptions. (The earlier conversational count of 20 was incorrect; verified during chunk 3.)
-- Original lights default to their exact legacy RGB colors. Their preloaded Kelvin values are Area Right `20000 K`, Area Left `3800 K`, Fill `5454 K`, and Back `5454 K`; switching modes does not alter the saved RGB colors. New lights default to white RGB with `5454 K` preloaded.
+- Original lights default to their exact legacy RGB colors. Their preloaded Kelvin values are Area Right `20000 K`, Area Left `3800 K`, Fill `5454 K`, and Back `5454 K`; switching modes does not alter the saved RGB colors. New lights default to white RGB with `6500 K` preloaded.
 - World defaults to Kelvin 5454 K at Strength 0.25, matching legacy QLE.
 - Verify actual EEVEE and Cycles results; API availability alone is not evidence of correct rendering.
 

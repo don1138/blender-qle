@@ -12,4 +12,4 @@ Approved 2026-10-18. Implemented in `qle-2.0`; runtime testing delegated to the 
 
 No Blender process, automated suite, render, or desktop validation was run for this revision. Python syntax was inspected and the ZIP rebuilt directly from source with `python3 tools/build_extension.py --source-only`. Earlier validation reports describe the previous candidate and do not establish that this revision passes.
 
-Artifact: `dist/quick_lighting_environment-2.0.7.zip`. The current ZIP hash and file count are recorded in the build output; the older 16-file candidate has been superseded.
+Artifact: `dist/quick_lighting_environment-2.0.8.zip`. The current ZIP hash and file count are recorded in the build output; earlier candidates have been superseded.

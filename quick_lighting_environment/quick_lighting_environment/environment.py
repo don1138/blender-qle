@@ -297,7 +297,7 @@ def preflight_backdrop():
     try:
         with bpy.data.libraries.load(str(path), link=False) as (source, _destination):
             if 'Backdrop' not in source.objects:
-                raise QLEError('The packaged stage asset has no Stage object; reinstall QLE')
+                raise QLEError('The packaged Stage asset is invalid (missing required Backdrop object); reinstall QLE')
     except (OSError, RuntimeError) as error:
         if isinstance(error, QLEError):
             raise
@@ -313,7 +313,7 @@ def prepare_backdrop():
     if obj is None or obj.type != 'MESH':
         if obj is not None:
             bpy.data.objects.remove(obj)
-        raise QLEError('The packaged Stage is not a mesh; reinstall QLE')
+        raise QLEError('The packaged Stage asset is invalid (Backdrop is not a mesh); reinstall QLE')
     return obj
 
 

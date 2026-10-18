@@ -2,6 +2,8 @@
 
 Date: 2026-10-18. Repository: `blender-qle`. Branch: `qle-2.0`.
 
+Historical evidence only: this checkpoint covers the chunk 2 candidate and predates the current packaged revision.
+
 ## Implemented in chunk 2
 
 - Persistent scene-local identity and original-World storage; saved metadata identifies managed objects, roles, original light slots, and protected dependencies independently of display names.

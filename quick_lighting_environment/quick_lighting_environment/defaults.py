@@ -42,6 +42,7 @@ LIGHT_SETTINGS = {
 
 
 DEFAULT_KELVIN = 5454.0
+NEW_LIGHT_KELVIN = 6500.0
 
 # The legacy lights used RGB colors rather than active temperature settings.
 # These values preload the equivalent QLE Classic choices without changing the
@@ -55,4 +56,4 @@ LIGHT_KELVIN_DEFAULTS = {
 
 
 def kelvin_for(slot):
-    return LIGHT_KELVIN_DEFAULTS.get(slot, DEFAULT_KELVIN)
+    return LIGHT_KELVIN_DEFAULTS.get(slot, NEW_LIGHT_KELVIN)

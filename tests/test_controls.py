@@ -40,6 +40,11 @@ class LayoutProbe:
         value = getattr(owner, name)  # Validate actual registered RNA paths/getters.
         self.calls.append(('prop', name))
 
+    def prop_enum(self, owner, name, value, **kwargs):
+        enum_items = getattr(owner.bl_rna.properties[name], 'enum_items', ())
+        assert value in {item.identifier for item in enum_items}
+        self.calls.append(('prop_enum', name, value))
+
     def operator(self, name, **kwargs):
         group, identifier = name.split('.')
         getattr(getattr(bpy.ops, group), identifier).get_rna_type()
@@ -337,7 +342,7 @@ class ControlsTests(unittest.TestCase):
             self.assertEqual(light.data.qle_kelvin, kelvin)
         added = light_controls.add(self.scene)
         self.assertEqual(added.data.qle_color_mode, 'RGB')
-        self.assertEqual(added.data.qle_kelvin, 5454)
+        self.assertEqual(added.data.qle_kelvin, 6500)
 
     def test_existing_lights_gain_classic_kelvin_without_overwriting_saved_choice(self):
         self.add()
