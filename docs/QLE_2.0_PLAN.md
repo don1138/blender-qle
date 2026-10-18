@@ -1,6 +1,6 @@
 # QLE 2.0 — Agreed Scope and Panel
 
-Recorded: 2026-10-18. Status: planning baseline; implementation not started.
+Recorded: 2026-10-18. Status: chunk 2 foundation implemented and checked; chunk 3 controls and chunk 4 packaged validation pending. See `FOUNDATION_VALIDATION.md` for evidence and limits.
 
 ## Repository and approval boundaries
 
