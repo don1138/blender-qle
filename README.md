@@ -4,25 +4,34 @@
 
 ![Blender QLE Screenshot](https://github.com/don1138/blender-qle/blob/master/imx/blender-qle.jpg)
 
+## QLE 2.0 development branch
+
+Requires **Blender 4.5 or newer**. The new panel is under **3D Viewport > Sidebar > Quick Tools > Quick Lighting Environment**. The screenshots below show the legacy release. This branch has not yet been packaged or released; see [the plan](docs/QLE_2.0_PLAN.md) and validation notes under `docs/`.
+
 ## Installation
 
-Download the latest ZIP from [**Releases**](https://github.com/don1138/blender-qle/releases), and install addon via `Edit > Preferences… > Add-ons > Install…`.
+Published ZIPs are available from [Releases](https://github.com/don1138/blender-qle/releases). Install the appropriate extension ZIP through Blender Preferences. The published release and this development branch may differ.
 
 ## Usage
 
-This addon creates a panel named **Quick Lighting Environment** under `Properties > Scene`.
+- **Add:** creates the original four-light environment, target, C backdrop, and 5454 K World at Strength 0.25. Click again to restore missing default parts without resetting adjustments. Protected original lights count as present.
+- **Reset:** restores default unprotected lights, target, backdrop, and World, removing added unprotected lights and adjustments. Requires confirmation. Protected lights remain.
+- **Clear:** removes unprotected QLE content and restores the previous World. Requires confirmation. Protected lights remain editable.
 
-**!! IMPORTANT !!** Make sure you have an active **World** in your scene, or the add-on will error out.
+Open **Adjustments** for more controls:
 
-### + Add Environement
-   + Creates a **World** named **"QLE World"** with **Background > Strength** set to `0.25` and a **Blackbody** value of `5454`.
-   + Creates four positioned **Area Lights** with **Blackbody** values of `3800` (Left, orange tint), `5454` (Fill and Back, equal energy), and `20,000` (Right, blue tint -- or at least as blue as a blackbody light gets). 
-   + Creates an **Empty** named `Lights_Target` and connects all **Lights** to it with ``Track To`` **Object Constraints**.
-   + Adds an **Mesh Object** named `Backdrop`.
-   + If you disconnect/delete a **Light**, the **Backdrop**, or the **Empty**, clicking **Add Environment** re-inserts the missing object or constraint back into your scene.
+- **Lights:** add, rename, select, enable/disable, protect, reset, or delete an Area light. Each light has Power, exclusive RGB/Kelvin color modes, Shape, and Size controls.
+- **Position:** Around Subject, Elevation, and Distance describe placement around the light's target. Users can still grab the actual light normally; these fields reflect the resulting position.
+- **Follow Target** controls whether target movement carries the light. **Aim > Target/Manual** independently chooses automatic pointing or manual rotation.
+- **Target:** choose Free or Object following. Selecting an object snaps to its origin; Position allows an offset. Following inherits translation only.
+- **Backdrop:** choose C, L, Flat Background, Floor, or None. Color, Finish, Roughness, Position, and visibility remain editable. Switching shapes preserves the surface settings and enabled state.
+- **World:** Strength plus the same exclusive RGB/Kelvin modes. Each mode remembers its own value; Kelvin is never multiplied by the saved RGB color.
 
-### - Clear Environment
-   + Purges **QLE Lights**, **Backdrop**, and **Empty** from scene, and resets the **World** from **"QLE World"** back to the original.
+**Protect** moves a light and its required helpers into `QLE Protected`. It retains its own target through Reset/Clear. **Reset Light** restores one light's settings and position while preserving its name and protection.
+
+Existing recognizable QLE setups can be adopted by clicking Add. Legacy QLE did not save the previous World in `.blend` files; if that history is missing, QLE reports it and creates a fallback World on Clear rather than guessing.
+
+The original backdrop's Diffuse material remains unchanged by default. An explicit Finish or Roughness edit converts its surface to Principled so reflective finishes can work. Reset restores the original material.
 
 ## Lights
 

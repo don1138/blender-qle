@@ -18,7 +18,7 @@
 
 import bpy
 
-from . import environment
+from . import environment, operators, panels, position, properties
 from .defaults import LIGHT_SETTINGS
 from .state import IDENTITY, QLESettings
 
@@ -28,7 +28,7 @@ bl_info = {
     "author": "Don Schnitzius",
     "version": (2, 0, 0),
     "blender": (4, 5, 0),
-    "location": "Properties > Scene",
+    "location": "3D Viewport > Sidebar > Quick Tools",
     "doc_url": "https://github.com/don1138/blender-qle",
     "support": "COMMUNITY",
     "category": "Lighting",
@@ -124,25 +124,8 @@ class ProtectLight(QLEOperator, bpy.types.Operator):
         return {'FINISHED'}
 
 
-class LayoutLightsPanel(bpy.types.Panel):
-    """Legacy panel retained until the approved chunk 3 interface replacement."""
-    bl_label = "Quick Lighting Environment"
-    bl_idname = "SCENE_PT_quickEnvironment"
-    bl_space_type = 'PROPERTIES'
-    bl_region_type = 'WINDOW'
-    bl_context = "scene"
-
-    def draw(self, context):
-        layout = self.layout
-        row = layout.row()
-        row.scale_y = 1.5
-        row.operator(AddLights.bl_idname, icon='ADD')
-        row = layout.row()
-        row.scale_y = 1.5
-        row.operator(ClearLights.bl_idname, icon='REMOVE')
-
-
-_classes = [QLESettings, AddLights, ClearLights, ResetEnvironment, ProtectLight, LayoutLightsPanel]
+_classes = [QLESettings, AddLights, ClearLights, ResetEnvironment, ProtectLight,
+            *operators.CLASSES, *panels.CLASSES]
 
 
 def register():
@@ -152,15 +135,23 @@ def register():
             bpy.utils.register_class(cls)
             registered.append(cls)
         bpy.types.Scene.qle_settings = bpy.props.PointerProperty(type=QLESettings)
+        properties.register()
+        position.register()
     except Exception:
         # Registration is the only transaction boundary that catches every
         # exception: unwind partial registration, then preserve the traceback.
+        position.unregister()
+        properties.unregister()
+        if hasattr(bpy.types.Scene, 'qle_settings'):
+            del bpy.types.Scene.qle_settings
         for cls in reversed(registered):
             bpy.utils.unregister_class(cls)
         raise
 
 
 def unregister():
+    position.unregister()
+    properties.unregister()
     if hasattr(bpy.types.Scene, 'qle_settings'):
         del bpy.types.Scene.qle_settings
     for cls in reversed(_classes):

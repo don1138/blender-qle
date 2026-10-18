@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased] — QLE 2.0 development
+
+### Added
+
+- Quick Tools N-panel with collapsed Adjustments, Add/Reset/Clear, and individual Area-light controls.
+- Add/Delete/Reset Light, protection through environment resets/removal, live orbit controls, independent target following and aiming, and manual viewport movement.
+- Object-following target with automatic origin snapping and editable offset.
+- Exclusive RGB/Kelvin modes for lights and World, with separately remembered values and the 19 QLS temperature presets.
+- C/L/Flat Background/Floor/None backdrop choices, color and surface finish controls, and position/visibility controls.
+- Background Blender regression checks and rendered color checks in EEVEE and Cycles.
+
+### Changed
+
+- Minimum Blender version is 4.5. The Scene Properties panel is replaced by the 3D Viewport sidebar panel.
+- Original QLE light and backdrop defaults are retained. Finish edits intentionally convert the legacy Diffuse surface to Principled; Reset restores the original material.
+
+### Fixed
+
+- Persistent scene-local ownership and World restoration replace name-based deletion and transient global state. Cleanup no longer runs a broad orphan purge.
+- Recognizable legacy setups can be adopted without resetting their appearance; missing original-World history is reported rather than guessed.
+
+This development branch is not yet packaged or released. Visual UI, interactive Undo/confirmation, and packaged installation checks remain pending.
+
 ## [1.8.0] - 2025-10-30
 
 ### Removed

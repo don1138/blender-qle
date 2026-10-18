@@ -1,6 +1,6 @@
 # QLE 2.0 — Agreed Scope and Panel
 
-Recorded: 2026-10-18. Status: chunk 2 foundation implemented and checked; chunk 3 controls and chunk 4 packaged validation pending. See `FOUNDATION_VALIDATION.md` for evidence and limits.
+Recorded: 2026-10-18. Status: chunk 3 panel and controls implemented and checked in background Blender; chunk 4 visual/interactive and packaged validation pending. See `FOUNDATION_VALIDATION.md` and `CONTROLS_VALIDATION.md` for evidence and limits.
 
 ## Repository and approval boundaries
 
@@ -103,6 +103,7 @@ Only show the active color mode's fields. Square/Disk expose one Size; Rectangle
 - Reset target defaults: position `(0, 0, 1)`, Follow Free.
 - Repeated Add preserves the original-World reference. Reset preserves it too; Clear restores it.
 - World state is persistent and isolated per scene. Do not copy QLE's transient global name-based restoration or broad orphan purge.
+- Clear resets the retained backdrop selection to C so Clear followed by Add starts fresh. Add inside an existing environment preserves its selected backdrop, including None.
 
 ## Light behavior
 
@@ -145,7 +146,7 @@ Only show the active color mode's fields. Square/Disk expose one Size; Rectangle
 - RGB uses its saved color without temperature multiplication.
 - Kelvin uses the selected temperature with a white RGB multiplier. No Tint field; a saved blue RGB color must not contaminate Kelvin.
 - Switching back to RGB restores the previous RGB color. Switching back to Kelvin restores the previous Kelvin setting.
-- Reuse QLS's 20 temperature presets, grouping, values, labels, and descriptions.
+- Reuse QLS's 19 temperature presets, grouping, values, labels, and descriptions. (The earlier conversational count of 20 was incorrect; verified during chunk 3.)
 - Original lights default to their legacy RGB colors; new lights default to white RGB. First-use Kelvin value is 5454 K.
 - World defaults to Kelvin 5454 K at Strength 0.25, matching legacy QLE.
 - Verify actual EEVEE and Cycles results; API availability alone is not evidence of correct rendering.
@@ -157,6 +158,7 @@ Only show the active color mode's fields. Square/Disk expose one Size; Rectangle
 - None removes backdrop geometry and disables geometry-dependent controls. Selecting another type restores geometry with the retained surface settings.
 - Preserve original QLE geometry, material appearance, placement, and visibility as the factory backdrop defaults. Verify the legacy material before implementing reset; do not silently replace it with QLS's gray/matte default.
 - Finish shortcuts use QLS values: Reflective 0.10, Satin 0.35, Matte 0.70; Roughness remains editable.
+- The verified legacy material uses Diffuse at Roughness 1.0. Preserve it until an explicit Finish/Roughness edit switches the surface to Principled; Reset restores the legacy material.
 - Position and Select permit native viewport placement. Enabled affects viewport and render visibility.
 
 ## Approved work sequence

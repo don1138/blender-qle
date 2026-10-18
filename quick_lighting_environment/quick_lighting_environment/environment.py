@@ -264,6 +264,7 @@ def configure_light(scene, light, definition):
 
 
 def ensure_default_lights(scene, collection, aim_target):
+    from . import position
     for slot, definition in LIGHT_SETTINGS.items():
         matching = [obj for obj in lights(scene) if obj.get(SLOT) == slot]
         if matching:
@@ -271,6 +272,7 @@ def ensure_default_lights(scene, collection, aim_target):
             for obj in matching:
                 if not obj.get(PROTECTED):
                     ensure_aim(scene, obj, aim_target)
+                position.initialize_light(scene, obj)
             continue
         data = bpy.data.lights.new(slot, 'AREA')
         light = bpy.data.objects.new(slot, data)
@@ -280,6 +282,7 @@ def ensure_default_lights(scene, collection, aim_target):
         light[PROTECTED] = False
         configure_light(scene, light, definition)
         ensure_aim(scene, light, aim_target, reset=True)
+        position.initialize_light(scene, light)
 
 
 def backdrop_path():
@@ -336,6 +339,8 @@ def attach_backdrop(scene, collection, obj):
 
 
 def configure_world(world):
+    from . import colors
+    colors.reset_world(world)
     world.use_nodes = True
     nodes = world.node_tree.nodes
     nodes.clear()
@@ -431,6 +436,8 @@ def set_protected(scene, light, protect):
             pose = light.matrix_world.copy()
             light.parent = None
             light.matrix_world = pose
+            from .position import set_world_position
+            set_world_position(light, pose.translation)
     else:
         destination = ensure_collection(scene, 'environment')
         aim_target = ensure_target(scene, destination)
@@ -444,6 +451,8 @@ def set_protected(scene, light, protect):
     if light.name not in destination.objects:
         destination.objects.link(light)
     light[PROTECTED] = protect
+    from . import position
+    position.rebind(scene, light)
     if not protect:
         copy = private_target(scene, light)
         if copy is not None:
@@ -460,12 +469,13 @@ def prepare(scene):
 
 
 def add_environment(scene):
+    from . import backdrops
     settings = scene.qle_settings
     needs_backdrop = settings.backdrop_type != 'NONE' and not objects_for(scene, 'backdrop')
     candidate = None if environment_exists(scene) else legacy_candidates(scene)
     if candidate is not None and candidate[3] is not None:
         needs_backdrop = False
-    prepared_backdrop = prepare_backdrop() if needs_backdrop else None
+    prepared_backdrop = backdrops.prepare(settings.backdrop_type) if needs_backdrop else None
     try:
         warnings = prepare(scene)
     except QLEError:
@@ -475,7 +485,14 @@ def add_environment(scene):
     capture_original_world(scene)
     collection = ensure_collection(scene, 'environment')
     if prepared_backdrop is not None:
+        if settings.backdrop_material is not None:
+            prepared_backdrop.data.materials.clear()
+            prepared_backdrop.data.materials.append(settings.backdrop_material)
         attach_backdrop(scene, collection, prepared_backdrop)
+        if settings.backdrop_material is None:
+            settings.backdrop_material = prepared_backdrop.active_material
+        prepared_backdrop.hide_viewport = not settings.backdrop_last_enabled
+        prepared_backdrop.hide_render = not settings.backdrop_last_enabled
     aim_target = ensure_target(scene, collection)
     ensure_default_lights(scene, collection, aim_target)
     ensure_world(scene)
@@ -497,17 +514,26 @@ def reset_environment(scene):
     for light in lights(scene):
         if light.get(PROTECTED):
             protect_target(scene, light)
-    remove_objects(scene, [obj for obj in objects_for(scene, 'light') if not obj.get(PROTECTED)])
+    protected_ids = {light[IDENTITY] for light in lights(scene) if light.get(PROTECTED)}
+    remove_objects(scene, [obj for obj in objects_for(scene)
+                           if (obj.get(ROLE) == 'light' and not obj.get(PROTECTED))
+                           or (obj.get(ROLE) == 'position_reference' and obj.get(DEPENDENCY) not in protected_ids)])
     remove_objects(scene, objects_for(scene, 'target') + old_backdrops)
     aim_target = ensure_target(scene, collection)
     ensure_default_lights(scene, collection, aim_target)
     settings = scene.qle_settings
+    previous_material = settings.backdrop_material
+    settings.backdrop_material = prepared_backdrop.active_material
+    if previous_material is not None and previous_material.users == 0 and owned(previous_material, scene, 'backdrop_material'):
+        bpy.data.materials.remove(previous_material)
+    settings.backdrop_last_enabled = True
     settings.backdrop_type = 'C_BACKDROP'
     ensure_world(scene, reset=True)
     return warnings
 
 
 def clear_environment(scene):
+    from . import backdrops
     # Clearing an untouched scene must not create an environment or World.
     if (not environment_exists(scene) and legacy_candidates(scene) is None
             and not scene.qle_settings.original_world_captured):
@@ -520,8 +546,11 @@ def clear_environment(scene):
     protected_ids = {light[IDENTITY] for light in lights(scene) if light.get(PROTECTED)}
     victims = [obj for obj in objects_for(scene)
                if not (obj.get(ROLE) == 'light' and obj.get(PROTECTED))
-               and not (obj.get(ROLE) == 'private_target' and obj.get(DEPENDENCY) in protected_ids)]
+               and not (obj.get(ROLE) in {'private_target', 'position_reference'} and obj.get(DEPENDENCY) in protected_ids)]
     remove_objects(scene, victims)
+    backdrops.cleanup(scene)
+    settings.backdrop_type = 'C_BACKDROP'
+    settings.backdrop_last_enabled = True
     remove_empty_collections(scene)
     managed = settings.managed_world
     if settings.original_world_captured:
