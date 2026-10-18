@@ -22,6 +22,7 @@ TEST_ENGINE = None
 sys.path.insert(0, str(ROOT / 'quick_lighting_environment'))
 qle = importlib.import_module('quick_lighting_environment')
 from quick_lighting_environment import environment as env
+from quick_lighting_environment.defaults import kelvin_for
 from quick_lighting_environment.state import AIM_CONSTRAINT, IDENTITY, OWNER, PROTECTED, ROLE, SLOT
 
 
@@ -79,6 +80,7 @@ class FoundationTests(unittest.TestCase):
             self.assertEqual(light.data.energy, definition['energy'])
             self.assertEqual(light.data.shape, definition['shape'])
             self.assertFalse(light.data.use_temperature)
+            self.assertEqual(light.data.temperature, kelvin_for(slot))
         self.scene.view_layers[0].update()
         identities = {obj[IDENTITY] for obj in env.objects_for(self.scene)}
         world = self.scene.world

@@ -2,6 +2,7 @@
 """Exclusive RGB/Kelvin modes with separate saved values for Lights and World."""
 import bpy
 from . import environment as env
+from .defaults import DEFAULT_KELVIN
 
 
 def background(world):
@@ -91,12 +92,12 @@ def set_mode(data, value):
         socket.default_value = (*data['_qle_rgb'], 1.0)
 
 
-def reset_light(data, color):
+def reset_light(data, color, kelvin=DEFAULT_KELVIN):
     data['_qle_rgb'] = tuple(color)
-    data['_qle_kelvin'] = 5454.0
+    data['_qle_kelvin'] = kelvin
     data.use_temperature = False
     data.color = color
-    data.temperature = 5454.0
+    data.temperature = kelvin
 
 
 def reset_world(world):

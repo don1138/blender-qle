@@ -18,7 +18,7 @@
 
 import bpy
 
-from . import environment, operators, panels, position, properties
+from . import environment, operators, panels, position, properties, stage_colors
 from .defaults import LIGHT_SETTINGS
 from .state import IDENTITY, QLESettings
 
@@ -26,7 +26,7 @@ bl_info = {
     "name": "QLE (Quick Lighting Environment)",
     "description": "Add Area Lights & Sets World Surface",
     "author": "Don Schnitzius",
-    "version": (2, 0, 0),
+    "version": (2, 0, 7),
     "blender": (4, 5, 0),
     "location": "3D Viewport > Sidebar > Quick Tools",
     "doc_url": "https://github.com/don1138/blender-qle",
@@ -94,7 +94,7 @@ class ResetEnvironment(QLEOperator, bpy.types.Operator):
     def invoke(self, context, event):
         return context.window_manager.invoke_confirm(
             self, event, title="Reset Environment?",
-            message="Restore default lights, target, backdrop, and World. Added unprotected lights and adjustments are lost. Protected lights remain.",
+            message="Restore default lights, target, stage, and World. Added unprotected lights and adjustments are lost. Protected lights remain.",
             confirm_text="Reset",
         )
 
@@ -137,9 +137,11 @@ def register():
         bpy.types.Scene.qle_settings = bpy.props.PointerProperty(type=QLESettings)
         properties.register()
         position.register()
+        stage_colors.load()
     except Exception:
         # Registration is the only transaction boundary that catches every
         # exception: unwind partial registration, then preserve the traceback.
+        stage_colors.unload()
         position.unregister()
         properties.unregister()
         if hasattr(bpy.types.Scene, 'qle_settings'):
@@ -150,6 +152,7 @@ def register():
 
 
 def unregister():
+    stage_colors.unload()
     position.unregister()
     properties.unregister()
     if hasattr(bpy.types.Scene, 'qle_settings'):

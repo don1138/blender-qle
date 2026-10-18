@@ -5,7 +5,7 @@ import bpy
 from mathutils import Vector
 
 from . import colors, environment as env, position
-from .defaults import LIGHT_SETTINGS
+from .defaults import LIGHT_SETTINGS, kelvin_for
 from .state import PROTECTED, SLOT
 
 
@@ -53,7 +53,7 @@ def reset(scene, light):
     env.configure_light(scene, light, definition)
     position.update_scene(scene)
     position.set_world_position(light, definition['loc'])
-    colors.reset_light(light.data, definition['color'])
+    colors.reset_light(light.data, definition['color'], kelvin_for(light.get(SLOT)))
     light.hide_viewport = False
     light.hide_render = False
     env.ensure_aim(scene, light, target, reset=True)

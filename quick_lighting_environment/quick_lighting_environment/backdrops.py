@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Backdrop selection and live surface controls, preserving legacy Diffuse defaults."""
+"""Stage selection and live surface controls, preserving legacy Diffuse defaults."""
 from pathlib import Path
 import bpy
 
@@ -51,7 +51,7 @@ def roughness(scene):
 def editable_material(scene):
     mat = material(scene)
     if mat is None:
-        raise env.QLEError('Add a backdrop to restore its surface controls')
+        raise env.QLEError('Add a stage to restore its surface controls')
     # Do not change another scene or an unrelated object sharing this material.
     stage = objects(scene)
     external = any(obj not in stage and obj.type == 'MESH'
@@ -59,7 +59,7 @@ def editable_material(scene):
                    for obj in bpy.data.objects)
     if not env.owned(mat, scene, 'backdrop_material') or external:
         mat = mat.copy()
-        mat.name = 'QLE Backdrop Surface'
+        mat.name = 'QLE Stage Surface'
         env.mark(mat, scene, 'backdrop_material')
         for obj in stage:
             if obj.data.users > 1:
@@ -105,10 +105,10 @@ def prepare(kind):
         return env.prepare_backdrop()
     name = ASSETS.get(kind)
     if name is None:
-        raise env.QLEError('Unknown backdrop type')
+        raise env.QLEError('Unknown stage type')
     path = Path(__file__).with_name('_backdrops.blend')
     if not path.is_file():
-        raise env.QLEError('The packaged backdrop options are missing; reinstall QLE')
+        raise env.QLEError('The packaged stage options are missing; reinstall QLE')
     try:
         with bpy.data.libraries.load(str(path), link=False) as (source, destination):
             if name not in source.objects:
@@ -130,7 +130,7 @@ def prepare(kind):
 
 def apply(scene, kind):
     if not env.environment_exists(scene):
-        raise env.QLEError('Add QLE before changing its backdrop')
+        raise env.QLEError('Add QLE before changing its stage')
     env.check_scene_isolation(scene, env.objects_for(scene))
     # Prepare first; a missing asset cannot destroy the working stage.
     replacement = None if kind == 'NONE' else prepare(kind)

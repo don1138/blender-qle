@@ -62,8 +62,8 @@ class QLESettings(bpy.types.PropertyGroup):
         get=backdrop_position_get, set=backdrop_position_set)
     backdrop_type: bpy.props.EnumProperty(
         items=[
-            ('C_BACKDROP', 'C Backdrop', ''),
-            ('L_BACKDROP', 'L Backdrop', ''),
+            ('C_BACKDROP', 'C Stage', ''),
+            ('L_BACKDROP', 'L Stage', ''),
             ('FLAT_BACKGROUND', 'Flat Background', ''),
             ('FLOOR', 'Floor', ''),
             ('NONE', 'None', ''),

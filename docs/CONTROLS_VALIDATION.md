@@ -1,5 +1,7 @@
 # QLE 2.0 — Controls Checkpoint
 
+**Historical evidence:** These results cover the candidate before the approved QLS UI / parenting revision. See `UI_REVISION.md`; the current ZIP has not been runtime-tested.
+
 Date: 2026-10-18. Repository: `blender-qle`. Branch: `qle-2.0`.
 
 ## Implemented in chunk 3
@@ -52,11 +54,8 @@ PYTHONDONTWRITEBYTECODE=1 /Applications/Blender-4.5.14.app/Contents/MacOS/Blende
 
 The additional `_backdrops.blend` library can be regenerated with `tools/export_backdrops.py` and the approved sibling QLS source. The original `_backdrop.blend` remains unchanged. The installed extension has no dependency on that checkout.
 
-## Remaining chunk 4 checks
+## Chunk 4 follow-up
 
-- Actual N-panel appearance, width/spacing, and interaction in Blender, including menu context and collapse-state persistence.
-- Interactive Reset/Clear confirmation and Undo behavior.
-- Packaged extension build, installation, disable/re-enable, and package inventory.
-- Representative scene/default renders beyond the isolated color checks.
+Package installation, default-render comparisons, and focused desktop checks are recorded in `RELEASE_VALIDATION.md`, including the exact UI combinations verified and those not individually exercised.
 
 No existing Blender window or user project was controlled. No commit, package build, push, or release was performed in chunk 3.

@@ -10,7 +10,7 @@ from uuid import uuid4
 
 import bpy
 
-from .defaults import LIGHT_SETTINGS
+from .defaults import LIGHT_SETTINGS, kelvin_for
 from .state import (
     AIM_CONSTRAINT, DEPENDENCY, IDENTITY, OWNER, PROTECTED, ROLE, SLOT,
 )
@@ -257,7 +257,8 @@ def configure_light(scene, light, definition):
     data.size_y = definition['size_y']
     data.color = definition['color']
     data.use_temperature = False
-    data.temperature = 5454.0
+    data.temperature = kelvin_for(light.get(SLOT))
+    data['_qle_kelvin'] = data.temperature
     data.exposure = 0.0
     data.normalize = True
     light.location = definition['loc']
@@ -296,7 +297,7 @@ def preflight_backdrop():
     try:
         with bpy.data.libraries.load(str(path), link=False) as (source, _destination):
             if 'Backdrop' not in source.objects:
-                raise QLEError('The packaged backdrop asset has no Backdrop object; reinstall QLE')
+                raise QLEError('The packaged stage asset has no Stage object; reinstall QLE')
     except (OSError, RuntimeError) as error:
         if isinstance(error, QLEError):
             raise
@@ -312,7 +313,7 @@ def prepare_backdrop():
     if obj is None or obj.type != 'MESH':
         if obj is not None:
             bpy.data.objects.remove(obj)
-        raise QLEError('The packaged Backdrop is not a mesh; reinstall QLE')
+        raise QLEError('The packaged Stage is not a mesh; reinstall QLE')
     return obj
 
 

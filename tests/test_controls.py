@@ -315,13 +315,41 @@ class ControlsTests(unittest.TestCase):
         data.qle_rgb = (0, 0, 1)
         data.qle_color_mode = 'KELVIN'
         self.assertPoint(data.color, (1, 1, 1))
-        self.assertAlmostEqual(data.qle_kelvin, 5454)
+        self.assertAlmostEqual(data.qle_kelvin, 3800)
         data.qle_kelvin = 3200
         data.qle_color_mode = 'RGB'
         self.assertPoint(data.color, (0, 0, 1))
         data.qle_color_mode = 'KELVIN'
         self.assertPoint(data.color, (1, 1, 1))
         self.assertEqual(data.temperature, 3200)
+
+    def test_classic_and_added_lights_preload_their_kelvin_defaults(self):
+        self.add()
+        expected = {
+            'Area_Right': 20000,
+            'Area_Left': 3800,
+            'Area_Fill': 5454,
+            'Area_Back': 5454,
+        }
+        for slot, kelvin in expected.items():
+            light = self.by_slot(slot)
+            self.assertEqual(light.data.qle_color_mode, 'RGB')
+            self.assertEqual(light.data.qle_kelvin, kelvin)
+        added = light_controls.add(self.scene)
+        self.assertEqual(added.data.qle_color_mode, 'RGB')
+        self.assertEqual(added.data.qle_kelvin, 5454)
+
+    def test_existing_lights_gain_classic_kelvin_without_overwriting_saved_choice(self):
+        self.add()
+        untouched = self.by_slot('Area_Right')
+        del untouched.data['_qle_kelvin']
+        untouched.data.temperature = 5454
+        position.initialize_light(self.scene, untouched)
+        self.assertEqual(untouched.data.qle_kelvin, 20000)
+        saved = self.by_slot('Area_Left')
+        saved.data.qle_kelvin = 3200
+        position.initialize_light(self.scene, saved)
+        self.assertEqual(saved.data.qle_kelvin, 3200)
 
     def test_world_color_modes_keep_separate_values_and_strength(self):
         self.add()

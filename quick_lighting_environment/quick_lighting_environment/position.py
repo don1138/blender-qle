@@ -7,7 +7,8 @@ from bpy.app.handlers import persistent
 from mathutils import Vector
 
 from . import environment as env
-from .state import DEPENDENCY, IDENTITY, OWNER, PROTECTED, ROLE
+from .defaults import kelvin_for
+from .state import DEPENDENCY, IDENTITY, OWNER, PROTECTED, ROLE, SLOT
 
 FOLLOW = 'qle_position_constraint'
 TARGET_FOLLOW = 'qle_target_constraint'
@@ -68,34 +69,30 @@ def add_follow_constraint(obj, target, key):
 
 def set_follow(scene, light, enabled):
     update_scene(scene)
-    position = world_position(light)
+    pose = light.matrix_world.copy()
+    light.pop('_qle_follow_parent_id', None)
     constraint = follow_constraint(light)
     if constraint is not None:
         light.constraints.remove(constraint)
     reference = reference_for(scene, light)
     if reference is not None:
         env.remove_objects(scene, [reference])
-    if enabled:
-        center = light_target(scene, light)
-        if center is not None:
-            reference = bpy.data.objects.new(f'{light.name} Follow', None)
-            role = 'protected_collection' if light.get(PROTECTED) else 'environment'
-            env.ensure_collection(scene, role).objects.link(reference)
-            env.mark(reference, scene, 'position_reference')
-            reference[DEPENDENCY] = light[IDENTITY]
-            reference.empty_display_size = 0.01
-            reference.hide_render = True
-            add_follow_constraint(reference, center, TARGET_FOLLOW)
-            reference.location = -world_position(center)
-            update_scene(scene)
-            for layer in scene.view_layers:
-                if reference.name in layer.objects:
-                    reference.hide_set(True, view_layer=layer)
-            add_follow_constraint(light, reference, FOLLOW)
+    center = light_target(scene, light) if enabled else None
+    light.parent = center
+    if center is not None:
+        # Targets are translation controls. Keep Transform cancels their initial
+        # transform without adding an offset-correction object per light.
+        center.lock_rotation = (True, True, True)
+        center.lock_scale = (True, True, True)
+        light.matrix_parent_inverse = center.matrix_world.inverted_safe()
+        light['_qle_follow_parent_id'] = center.get(IDENTITY, '')
+    else:
+        light.pop('_qle_follow_parent_id', None)
+    light.matrix_world = pose
+    light.pop(FOLLOW, None)
     light['_qle_follow_target'] = enabled
-    set_world_position(light, position)
     update_scene(scene)
-    light['_qle_last_position'] = tuple(position)
+    light['_qle_last_position'] = tuple(pose.translation)
 
 
 def reference_for(scene, light):
@@ -115,6 +112,10 @@ def initialize_light(scene, light):
         constraint = env.ensure_aim(scene, light, center)
         constraint.target = center
         constraint.mute = light.get('_qle_aim_mode', 'TARGET') == 'MANUAL'
+    if '_qle_kelvin' not in light.data:
+        kelvin = light.data.temperature if light.data.use_temperature else kelvin_for(light.get(SLOT, ''))
+        light.data['_qle_kelvin'] = kelvin
+        light.data.temperature = kelvin
     if not light.get('_qle_position_initialized'):
         if env.owned(light.parent, scene):
             update_scene(scene)
@@ -122,16 +123,13 @@ def initialize_light(scene, light):
             light.parent = None
             light.matrix_world = matrix
         set_follow(scene, light, True)
-        if not light.data.use_temperature:
-            light.data.temperature = 5454.0
         light['_qle_position_initialized'] = True
     elif light.get('_qle_follow_target', True):
-        constraint = follow_constraint(light)
         center = light_target(scene, light)
-        reference = reference_for(scene, light)
-        reference_constraint = follow_constraint(reference, TARGET_FOLLOW) if reference is not None else None
-        if center is not None and (constraint is None or reference_constraint is None or reference_constraint.target != center):
+        if center is not None and (light.parent != center or reference_for(scene, light) is not None):
             set_follow(scene, light, True)
+    elif reference_for(scene, light) is not None:
+        set_follow(scene, light, False)
 
 
 def rebind(scene, light):
@@ -261,12 +259,11 @@ def synchronize(scene, _depsgraph=None):
                 if tuple(obj.get('_qle_last_target_position', ())) != value:
                     obj['_qle_last_target_position'] = value
             elif role == 'light' and obj.get('_qle_position_initialized'):
-                constraint = follow_constraint(obj)
-                reference = constraint.target if constraint is not None else None
-                target_constraint = follow_constraint(reference, TARGET_FOLLOW) if reference is not None else None
-                if constraint is not None and (constraint.target is None or (target_constraint is not None and target_constraint.target is None)):
+                if obj.get('_qle_follow_parent_id') and obj.parent is None:
+                    # Blender drops a deleted parent; retain the last evaluated
+                    # position until Add restores the missing target.
                     position = obj.get('_qle_last_position', tuple(world_position(obj)))
-                    obj.constraints.remove(constraint)
+                    obj.pop('_qle_follow_parent_id', None)
                     set_world_position(obj, position)
                 value = tuple(world_position(obj))
                 if tuple(obj.get('_qle_last_position', ())) != value:
@@ -280,13 +277,41 @@ def synchronize(scene, _depsgraph=None):
         _guard = False
 
 
+@persistent
+def migrate_follow_helpers(_unused=None):
+    """Convert saved development-version helpers when enabling or loading QLE."""
+    for scene in bpy.data.scenes:
+        if not hasattr(scene, 'qle_settings'):
+            continue
+        managed = env.objects_for(scene)
+        try:
+            env.check_scene_isolation(scene, managed)
+            owner = scene.qle_settings.environment_id
+            if owner and any(other is not scene and other.qle_settings.environment_id == owner for other in bpy.data.scenes):
+                continue
+            for light in env.lights(scene):
+                initialize_light(scene, light)
+        except env.QLEError as error:
+            print('QLE follow migration skipped:', error)
+
+
 def register():
     for handlers in (bpy.app.handlers.depsgraph_update_post, bpy.app.handlers.frame_change_post):
         if synchronize not in handlers:
             handlers.append(synchronize)
+    if migrate_follow_helpers not in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.append(migrate_follow_helpers)
+    # Extension registration runs while bpy.data may still be restricted.
+    # Defer migration until Blender has restored normal data access.
+    if not bpy.app.timers.is_registered(migrate_follow_helpers):
+        bpy.app.timers.register(migrate_follow_helpers, first_interval=0.0)
 
 
 def unregister():
     for handlers in (bpy.app.handlers.depsgraph_update_post, bpy.app.handlers.frame_change_post):
         if synchronize in handlers:
             handlers.remove(synchronize)
+    if migrate_follow_helpers in bpy.app.handlers.load_post:
+        bpy.app.handlers.load_post.remove(migrate_follow_helpers)
+    if bpy.app.timers.is_registered(migrate_follow_helpers):
+        bpy.app.timers.unregister(migrate_follow_helpers)

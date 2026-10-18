@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """The agreed compact N-panel; drawing is read-only."""
 import bpy
-from . import backdrops, colors, environment as env, operators, temperatures
+from . import backdrops, colors, environment as env, operators, temperatures, stage_colors
+from .constants import version_label
 from .state import IDENTITY, PROTECTED, SLOT
 
 
@@ -18,13 +19,45 @@ def temperature_label(data):
     return f'{preset[1]} — {kelvin:g} K' if preset and abs(preset[0] - kelvin) < 0.5 else f'Custom — {kelvin:g} K'
 
 
+def field_row(layout, label, height=1.25):
+    row = layout.row()
+    row.scale_y = height
+    row.use_property_split = False
+    split = row.split(factor=0.4)
+    caption = split.column()
+    caption.alignment = 'RIGHT'
+    caption.label(text=label)
+    return split.row(align=True)
+
+
+def mode_buttons(layout, data, prop, label):
+    buttons = field_row(layout, label)
+    for item in data.bl_rna.properties[prop].enum_items:
+        buttons.prop_enum(data, prop, item.identifier, text=item.name)
+
+
+def disclosure(layout, light, section, label):
+    name = f'qle_ui_{section}_open'
+    opened = getattr(light, name)
+    row = layout.row(align=True)
+    row.use_property_split = False
+    row.prop(light, name, text=label, icon='TRIA_DOWN' if opened else 'TRIA_RIGHT', emboss=False)
+    if not opened:
+        return None
+    body = layout.column()
+    body.use_property_split = True
+    body.use_property_decorate = False
+    return body
+
+
 def color_fields(layout, data, owner):
-    layout.prop(data, 'qle_color_mode', expand=True)
+    mode_buttons(layout, data, 'qle_color_mode', 'Color Mode')
     if data.qle_color_mode == 'RGB':
         layout.prop(data, 'qle_rgb')
     else:
-        layout.context_pointer_set('qle_color_owner', owner)
-        layout.menu('QLE_MT_temperatures', text=temperature_label(data))
+        row = field_row(layout, 'Temperature')
+        row.context_pointer_set('qle_color_owner', owner)
+        row.menu('QLE_MT_temperatures', text=temperature_label(data))
         layout.prop(data, 'qle_kelvin')
 
 
@@ -46,10 +79,31 @@ class TemperatureMenu(bpy.types.Menu):
             self.layout.separator()
 
 
+class StudioColorsMenu(bpy.types.Menu):
+    bl_idname = 'QLE_MT_studio_colors'
+    bl_label = 'Studio Colors'
+
+    def draw(self, context):
+        active = stage_colors.active(context.scene)
+        for index, (group, names) in enumerate(stage_colors.GROUPS):
+            if index:
+                self.layout.separator()
+            self.layout.label(text=group)
+            for name in names:
+                label = stage_colors.PRESETS[name][0]
+                if name == active:
+                    label += ' ✓'
+                op = self.layout.operator('qle.set_stage_color', text=label, icon_value=stage_colors.icon(name))
+                op.preset = name
+
+
 def light_item(layout, context, light):
     identity = light[IDENTITY]
-    header, body = layout.panel(f'QLE_LIGHT_{identity}', default_closed=True)
+    box = layout.box()
+    header = box.row(align=True)
     header.use_property_split = False
+    opened = light.qle_ui_light_open
+    header.prop(light, 'qle_ui_light_open', text='', icon='TRIA_DOWN' if opened else 'TRIA_RIGHT', emboss=False)
     header.prop(light, 'name', text='')
     select_button(header, context, light)
     protected = light.get(PROTECTED, False)
@@ -60,42 +114,45 @@ def light_item(layout, context, light):
     op = header.operator('qle.enable_light', text='', icon='HIDE_OFF' if enabled else 'HIDE_ON', emboss=False)
     op.light_id = identity
     op.enabled = not enabled
-    if body is None:
+    if not opened:
         return
+    body = box.column()
     body.use_property_split = True
     body.use_property_decorate = False
+    row = body.row(align=True)
+    row.scale_y = 1.25
+    row.operator('qle.reset_light', text='Reset Light', icon='FILE_REFRESH').light_id = identity
+    row.operator('qle.delete_light', text='Delete Light', icon='REMOVE').light_id = identity
+    body.separator()
     body.prop(light.data, 'energy', text='Power')
     color_fields(body, light.data, light)
-    header, position = body.panel(f'QLE_POSITION_{identity}', default_closed=True)
-    header.label(text='Position')
+    body.separator()
+    position = disclosure(body, light, 'position', 'Position')
     if position is not None:
         position.prop(light, 'qle_follow_target')
         position.prop(light, 'qle_around')
         position.prop(light, 'qle_elevation')
         position.prop(light, 'qle_distance')
-    header, aim = body.panel(f'QLE_AIM_{identity}', default_closed=True)
-    header.label(text='Aim')
+    aim = disclosure(body, light, 'aim', 'Aim')
     if aim is not None:
-        aim.prop(light, 'qle_aim_mode', expand=True)
+        mode_buttons(aim, light, 'qle_aim_mode', 'Aim')
         if light.qle_aim_mode == 'MANUAL':
             aim.prop(light, 'rotation_euler', text='Rotation')
-    header, shape = body.panel(f'QLE_SHAPE_{identity}', default_closed=True)
-    header.label(text='Shape')
+    shape = disclosure(body, light, 'shape', 'Shape')
     if shape is not None:
         if light.data.type == 'AREA':
-            shape.prop(light.data, 'shape')
+            shape_row = shape.row()
+            shape_row.scale_y = 1.25
+            shape_row.prop(light.data, 'shape')
             shape.prop(light.data, 'size', text='Size X' if light.data.shape in {'RECTANGLE', 'ELLIPSE'} else 'Size')
             if light.data.shape in {'RECTANGLE', 'ELLIPSE'}:
                 shape.prop(light.data, 'size_y', text='Size Y')
         else:
             shape.label(text='Reset Light to restore its Area type')
-    row = body.row(align=True)
-    row.operator('qle.reset_light', text='Reset Light', icon='FILE_REFRESH').light_id = identity
-    row.operator('qle.delete_light', text='Delete Light', icon='REMOVE').light_id = identity
 
 
 class LightingPanel(bpy.types.Panel):
-    bl_label = 'Quick Lighting Environment'
+    bl_label = f'Quick Lighting Environment — {version_label()}'
     bl_idname = 'VIEW3D_PT_quick_lighting_environment'
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
@@ -110,6 +167,7 @@ class LightingPanel(bpy.types.Panel):
         layout = self.layout
         layout.use_property_decorate = False
         actions = layout.row(align=True)
+        actions.scale_y = 1.5
         actions.operator('qle.add_lights', text='Add', icon='ADD')
         actions.operator('qle.reset_environment', text='Reset', icon='FILE_REFRESH')
         actions.operator('qle.clear_lights', text='Clear', icon='REMOVE')
@@ -123,6 +181,7 @@ class LightingPanel(bpy.types.Panel):
         except env.QLEError as error:
             layout.label(text=str(error), icon='ERROR')
             return
+        layout.separator()
         header, adjustments = layout.panel('QLE_ADJUSTMENTS', default_closed=True)
         header.label(text='Adjustments')
         if adjustments is None:
@@ -134,6 +193,7 @@ class LightingPanel(bpy.types.Panel):
         if light_body is not None:
             row = light_body.row()
             row.enabled = env.environment_exists(scene)
+            row.scale_y = 1.25
             row.operator('qle.add_light', icon='ADD')
             order = {name: index for index, name in enumerate(('Area_Left', 'Area_Right', 'Area_Fill', 'Area_Back'))}
             for light in sorted(env.lights(scene), key=lambda obj: (order.get(obj.get(SLOT), 4), obj.name.casefold())):
@@ -144,7 +204,7 @@ class LightingPanel(bpy.types.Panel):
             header.label(text='Target')
             select_button(header, context, target)
             if target_body is not None:
-                target_body.prop(target, 'qle_follow_mode', expand=True)
+                mode_buttons(target_body, target, 'qle_follow_mode', 'Follow')
                 if target.qle_follow_mode == 'OBJECT':
                     target_body.prop(target, 'qle_follow_object')
                 target_body.prop(target, 'qle_target_position')
@@ -157,7 +217,7 @@ class LightingPanel(bpy.types.Panel):
         settings = scene.qle_settings
         objects = backdrops.objects(scene)
         header, body = layout.panel('QLE_BACKDROP', default_closed=True)
-        header.label(text='Backdrop')
+        header.label(text='Stage')
         select_button(header, context, objects[0] if objects else None)
         enabled = bool(objects) and all(not obj.hide_viewport and not obj.hide_render for obj in objects)
         row = header.row()
@@ -166,25 +226,37 @@ class LightingPanel(bpy.types.Panel):
         if body is None:
             return
         label = next(item[1] for item in operators.BACKDROP_ITEMS if item[0] == settings.backdrop_type)
-        row = body.row()
-        row.label(text='Type')
-        row.operator_menu_enum('qle.set_backdrop', 'kind', text=label)
-        controls = body.column()
-        controls.enabled = bool(objects)
-        controls.prop(settings, 'backdrop_color')
-        finish = controls.row(align=True)
-        roughness = backdrops.roughness(scene)
-        is_principled = backdrops.surface_node(backdrops.material(scene))
-        for name, value in backdrops.FINISHES.items():
-            active = is_principled is not None and is_principled.type == 'BSDF_PRINCIPLED' and abs(value - roughness) < 0.0001
-            finish.operator('qle.set_finish', text=name.title(), depress=active).finish = name
-        controls.prop(settings, 'backdrop_roughness')
+        field_row(body, 'Stage').operator_menu_enum('qle.set_backdrop', 'kind', text=label)
+        body.separator()
         header, position = body.panel('QLE_BACKDROP_POSITION', default_closed=True)
         header.enabled = bool(objects)
         header.label(text='Position')
         if position is not None:
             position.enabled = bool(objects)
-            position.prop(settings, 'backdrop_position')
+            position.prop(settings, 'backdrop_position', text='Position')
+        header, surface = body.panel('QLE_STAGE_SURFACE', default_closed=False)
+        header.label(text='Surface')
+        if surface is None:
+            return
+        controls = surface.column()
+        controls.enabled = bool(objects)
+        field_row(controls, 'Color').menu('QLE_MT_studio_colors', text=stage_colors.label(scene),
+                                       icon_value=stage_colors.icon(stage_colors.active(scene)))
+        controls.prop(settings, 'backdrop_color', text='Custom')
+        row = controls.row()
+        row.scale_y = 1.25
+        row.use_property_split = False
+        split = row.split(factor=0.4)
+        caption = split.column()
+        caption.alignment = 'RIGHT'
+        caption.label(text='Finish')
+        buttons = split.column(align=True)
+        roughness = backdrops.roughness(scene)
+        node = backdrops.surface_node(backdrops.material(scene))
+        for name, value in backdrops.FINISHES.items():
+            active = node is not None and node.type == 'BSDF_PRINCIPLED' and abs(value - roughness) < 0.0001
+            buttons.operator('qle.set_finish', text=name.title(), depress=active).finish = name
+        controls.prop(settings, 'backdrop_roughness', text='Roughness')
 
     def draw_world(self, layout, scene):
         header, body = layout.panel('QLE_WORLD', default_closed=True)
@@ -202,4 +274,4 @@ class LightingPanel(bpy.types.Panel):
         color_fields(body, world, world)
 
 
-CLASSES = [TemperatureMenu, LightingPanel]
+CLASSES = [TemperatureMenu, StudioColorsMenu, LightingPanel]

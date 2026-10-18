@@ -39,3 +39,20 @@ LIGHT_SETTINGS = {
         "temperature": None
     },
 }
+
+
+DEFAULT_KELVIN = 5454.0
+
+# The legacy lights used RGB colors rather than active temperature settings.
+# These values preload the equivalent QLE Classic choices without changing the
+# default RGB appearance.
+LIGHT_KELVIN_DEFAULTS = {
+    "Area_Right": 20000.0,
+    "Area_Left": 3800.0,
+    "Area_Fill": DEFAULT_KELVIN,
+    "Area_Back": DEFAULT_KELVIN,
+}
+
+
+def kelvin_for(slot):
+    return LIGHT_KELVIN_DEFAULTS.get(slot, DEFAULT_KELVIN)

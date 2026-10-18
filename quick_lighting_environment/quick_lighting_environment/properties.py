@@ -56,8 +56,11 @@ def register_property(owner, name, definition):
 
 
 def register():
+    for section in ('light', 'position', 'aim', 'shape'):
+        register_property(bpy.types.Object, f'qle_ui_{section}_open', bpy.props.BoolProperty(
+            name=section.title(), default=False))
     register_property(bpy.types.Object, 'qle_follow_target', bpy.props.BoolProperty(
-        name='Follow Target', description='Move with the lighting target without inheriting rotation or scale',
+        name='Follow Target', description='Parent this light to its translation target, keeping its world transform',
         get=follow_get, set=follow_set))
     for name, label, component, options in (
         ('qle_around', 'Around Subject', 0, {'subtype': 'ANGLE', 'soft_min': -pi, 'soft_max': pi}),

@@ -1,15 +1,15 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Small undoable actions behind the N-panel."""
 import bpy
-from . import backdrops, colors, environment as env, light_controls, temperatures
+from . import backdrops, colors, environment as env, light_controls, temperatures, stage_colors
 from .state import IDENTITY
 
 BACKDROP_ITEMS = [
-    ('C_BACKDROP', 'C Backdrop', 'Original QLE backdrop'),
-    ('L_BACKDROP', 'L Backdrop', 'Floor sweeping into a back wall'),
+    ('C_BACKDROP', 'C Stage', 'Original QLE stage'),
+    ('L_BACKDROP', 'L Stage', 'Floor sweeping into a back wall'),
     ('FLAT_BACKGROUND', 'Flat Background', 'Upright background without a floor'),
     ('FLOOR', 'Floor', 'Ground surface without a back wall'),
-    ('NONE', 'None', 'Remove backdrop geometry'),
+    ('NONE', 'None', 'Remove stage geometry'),
 ]
 
 
@@ -93,9 +93,9 @@ class SelectItem(Action, bpy.types.Operator):
 
 
 class SetBackdrop(Action, bpy.types.Operator):
-    """Replace backdrop geometry while preserving its surface and enabled state"""
+    """Replace stage geometry while preserving its surface and enabled state"""
     bl_idname = 'qle.set_backdrop'
-    bl_label = 'Backdrop Type'
+    bl_label = 'Stage Type'
     kind: bpy.props.EnumProperty(items=BACKDROP_ITEMS)
 
     def action(self, context):
@@ -103,9 +103,9 @@ class SetBackdrop(Action, bpy.types.Operator):
 
 
 class EnableBackdrop(Action, bpy.types.Operator):
-    """Enable or disable the backdrop in both viewport and render"""
+    """Enable or disable the stage in both viewport and render"""
     bl_idname = 'qle.enable_backdrop'
-    bl_label = 'Enable Backdrop'
+    bl_label = 'Enable Stage'
     enabled: bpy.props.BoolProperty()
 
     def action(self, context):
@@ -150,5 +150,16 @@ class SetTemperature(Action, bpy.types.Operator):
         data['qle_temperature_preset'] = self.preset
 
 
-CLASSES = [AddLight, ResetLight, DeleteLight, EnableLight, SelectItem, SetBackdrop,
+
+class SetStageColor(Action, bpy.types.Operator):
+    """Apply a Studio Color to the stage surface"""
+    bl_idname = 'qle.set_stage_color'
+    bl_label = 'Set Stage Color'
+    preset: bpy.props.EnumProperty(items=[(name, label, '') for name, (label, _) in stage_colors.PRESETS.items()])
+
+    def action(self, context):
+        env.check_scene_isolation(context.scene, env.objects_for(context.scene))
+        backdrops.set_color(context.scene, stage_colors.value(self.preset))
+
+CLASSES = [SetStageColor, AddLight, ResetLight, DeleteLight, EnableLight, SelectItem, SetBackdrop,
            EnableBackdrop, SetFinish, SetTemperature]

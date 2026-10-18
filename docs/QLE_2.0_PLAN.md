@@ -1,6 +1,6 @@
 # QLE 2.0 — Agreed Scope and Panel
 
-Recorded: 2026-10-18. Status: chunk 3 panel and controls implemented and checked in background Blender; chunk 4 visual/interactive and packaged validation pending. See `FOUNDATION_VALIDATION.md` and `CONTROLS_VALIDATION.md` for evidence and limits.
+Recorded: 2026-10-18. Status: implementation and packaged checks complete; focused desktop smoke tests performed. QLS-style UI and direct-parenting revision subsequently implemented; see `UI_REVISION.md`. Owner performs runtime testing for that revision. See `FOUNDATION_VALIDATION.md`, `CONTROLS_VALIDATION.md`, and `RELEASE_VALIDATION.md` for evidence and specific UI coverage limits.
 
 ## Repository and approval boundaries
 
@@ -147,7 +147,7 @@ Only show the active color mode's fields. Square/Disk expose one Size; Rectangle
 - Kelvin uses the selected temperature with a white RGB multiplier. No Tint field; a saved blue RGB color must not contaminate Kelvin.
 - Switching back to RGB restores the previous RGB color. Switching back to Kelvin restores the previous Kelvin setting.
 - Reuse QLS's 19 temperature presets, grouping, values, labels, and descriptions. (The earlier conversational count of 20 was incorrect; verified during chunk 3.)
-- Original lights default to their legacy RGB colors; new lights default to white RGB. First-use Kelvin value is 5454 K.
+- Original lights default to their exact legacy RGB colors. Their preloaded Kelvin values are Area Right `20000 K`, Area Left `3800 K`, Fill `5454 K`, and Back `5454 K`; switching modes does not alter the saved RGB colors. New lights default to white RGB with `5454 K` preloaded.
 - World defaults to Kelvin 5454 K at Strength 0.25, matching legacy QLE.
 - Verify actual EEVEE and Cycles results; API availability alone is not evidence of correct rendering.
 
