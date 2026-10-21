@@ -11,7 +11,7 @@ import tomllib
 import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGE = ROOT / 'quick_lighting_environment/quick_lighting_environment'
+PACKAGE = ROOT / 'quick_lighting_environment'
 RUNTIME_FILES = (
     '__init__.py', 'backdrops.py', 'colors.py', 'constants.py', 'defaults.py', 'environment.py',
     'light_controls.py', 'operators.py', 'panels.py', 'position.py', 'properties.py',

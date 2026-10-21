@@ -8,7 +8,7 @@ import bpy
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT.parent / 'blender-qls/quick_lighting_studio/assets/stages.blend'
-DESTINATION = ROOT / 'quick_lighting_environment/quick_lighting_environment/_backdrops.blend'
+DESTINATION = ROOT / 'quick_lighting_environment/_backdrops.blend'
 NAMES = {
     'QLS Stage - L Backdrop': 'L Backdrop',
     'QLS Stage - Flat Background': 'Flat Background',
@@ -34,7 +34,7 @@ for collection, name in zip(destination.collections, NAMES.values()):
 bpy.data.libraries.write(str(DESTINATION), objects, fake_user=True, compress=True)
 print('QLE_BACKDROP_ASSETS_EXPORTED', DESTINATION, sorted(obj.name for obj in objects), flush=True)
 
-legacy = ROOT / 'quick_lighting_environment/quick_lighting_environment/_backdrop.blend'
+legacy = ROOT / 'quick_lighting_environment/_backdrop.blend'
 with bpy.data.libraries.load(str(legacy), link=False) as (_source, destination):
     destination.objects = ['Backdrop']
 obj = destination.objects[0]

@@ -19,7 +19,7 @@ import bpy
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
 TEST_ENGINE = None
-sys.path.insert(0, str(ROOT / 'quick_lighting_environment'))
+sys.path.insert(0, str(ROOT))
 qle = importlib.import_module('quick_lighting_environment')
 from quick_lighting_environment import environment as env
 from quick_lighting_environment.defaults import kelvin_for
@@ -52,7 +52,7 @@ class FoundationTests(unittest.TestCase):
             text=True,
         )
         module = types.ModuleType('qle_legacy_fixture')
-        module.__file__ = str(ROOT / 'quick_lighting_environment/quick_lighting_environment/__init__.py')
+        module.__file__ = str(ROOT / 'quick_lighting_environment/__init__.py')
         exec(compile(source, module.__file__, 'exec'), module.__dict__)
         module.setup_qle_environment()
         return module

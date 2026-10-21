@@ -8,7 +8,7 @@ import bpy
 from mathutils import Vector
 
 sys.dont_write_bytecode = True
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'quick_lighting_environment'))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import quick_lighting_environment as qle
 from quick_lighting_environment import backdrops, colors, environment as env, light_controls
 

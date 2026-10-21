@@ -11,7 +11,7 @@ from mathutils import Vector
 
 sys.dont_write_bytecode = True
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / 'quick_lighting_environment'))
+sys.path.insert(0, str(ROOT))
 qle = importlib.import_module('quick_lighting_environment')
 source = subprocess.check_output(['git', '-C', str(ROOT), 'show',
     'd9b8cad:quick_lighting_environment/quick_lighting_environment/__init__.py'], text=True)
