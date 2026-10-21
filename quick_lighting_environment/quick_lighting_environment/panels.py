@@ -166,12 +166,21 @@ class LightingPanel(bpy.types.Panel):
         scene = context.scene
         layout = self.layout
         layout.use_property_decorate = False
+        environment_exists = env.environment_exists(scene)
+        lights = env.lights(scene)
         actions = layout.row(align=True)
         actions.scale_y = 1.5
-        actions.operator('qle.add_lights', text='Add', icon='ADD')
-        actions.operator('qle.reset_environment', text='Reset', icon='FILE_REFRESH')
-        actions.operator('qle.clear_lights', text='Clear', icon='REMOVE')
-        if not env.environment_exists(scene) and not env.lights(scene):
+        button = actions.row(align=True)
+        button.operator('qle.add_lights', text='Add', icon='ADD')
+        for operator, label, icon in (
+                ('qle.reset_environment', 'Reset', 'FILE_REFRESH'),
+                ('qle.clear_lights', 'Clear', 'REMOVE')):
+            button = actions.row(align=True)
+            button.enabled = environment_exists or bool(lights)
+            button.operator(operator, text=label, icon=icon)
+        if not environment_exists and not lights:
+            layout.separator()
+            layout.label(text='No lighting environment', icon='GHOST_DISABLED')
             return
         try:
             env.check_scene_isolation(scene, env.objects_for(scene))
@@ -182,25 +191,22 @@ class LightingPanel(bpy.types.Panel):
             layout.label(text=str(error), icon='ERROR')
             return
         layout.separator()
-        header, adjustments = layout.panel('QLE_ADJUSTMENTS', default_closed=True)
-        header.label(text='Adjustments')
-        if adjustments is None:
-            return
-        adjustments.use_property_split = True
-        adjustments.use_property_decorate = False
-        header, light_body = adjustments.panel('QLE_LIGHTS', default_closed=False)
+        layout.use_property_split = True
+        layout.use_property_decorate = False
+        header, light_body = layout.panel('QLE_LIGHTS', default_closed=False)
         header.label(text='Lights')
         if light_body is not None:
             row = light_body.row()
-            row.enabled = env.environment_exists(scene)
+            row.enabled = environment_exists
             row.scale_y = 1.25
             row.operator('qle.add_light', icon='ADD')
             order = {name: index for index, name in enumerate(('Area_Left', 'Area_Right', 'Area_Fill', 'Area_Back'))}
-            for light in sorted(env.lights(scene), key=lambda obj: (order.get(obj.get(SLOT), 4), obj.name.casefold())):
+            for light in sorted(lights, key=lambda obj: (order.get(obj.get(SLOT), 4), obj.name.casefold())):
                 light_item(light_body, context, light)
         target = env.target(scene)
         if target is not None:
-            header, target_body = adjustments.panel('QLE_TARGET', default_closed=True)
+            layout.separator()
+            header, target_body = layout.panel('QLE_TARGET', default_closed=True)
             header.label(text='Target')
             select_button(header, context, target)
             if target_body is not None:
@@ -208,9 +214,11 @@ class LightingPanel(bpy.types.Panel):
                 if target.qle_follow_mode == 'OBJECT':
                     target_body.prop(target, 'qle_follow_object')
                 target_body.prop(target, 'qle_target_position')
-        if env.environment_exists(scene):
-            self.draw_backdrop(adjustments, context)
-            self.draw_world(adjustments, scene)
+        if environment_exists:
+            layout.separator()
+            self.draw_backdrop(layout, context)
+            layout.separator()
+            self.draw_world(layout, scene)
 
     def draw_backdrop(self, layout, context):
         scene = context.scene

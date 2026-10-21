@@ -2,117 +2,112 @@
 
 **Quick Lighting Environment adds a useful studio-style lighting setup to your Blender scene in one click.**
 
-QLE 2.0 keeps the familiar four-light result while adding direct controls for light placement, aiming, color temperature, the Stage, and the World in the 3D Viewport Sidebar.
-
-<!-- Add a current QLE 2.0 Quick Tools panel screenshot here before release. -->
+![Quick Lighting Environment 2.0 controls](imx/blender-qle.jpg)
 
 ## Requirements
 
-- Blender 4.5 or newer
-- EEVEE or Cycles
+- **Blender 4.5** or newer
+- **EEVEE** or **Cycles**
 
 QLE appears under **3D Viewport > Sidebar > Quick Tools > Quick Lighting Environment**.
 
 ## Installation
 
-1. Download the QLE extension ZIP from [Releases](https://github.com/don1138/blender-qle/releases).
-2. In Blender, open **Edit > Preferences > Extensions**.
-3. Choose **Install from Disk** and select the downloaded ZIP.
-4. Enable **QLE (Quick Lighting Environment)** if Blender does not enable it automatically.
+Download the latest ZIP from [Releases](https://github.com/don1138/blender-qle/releases), then drag it onto Blender and click **Install**. Do not unzip it first.
 
-Install the ZIP directly. Do not extract it first.
-
-## Quick Start
+## Usage
 
 1. Open the **Quick Tools** tab in the 3D Viewport Sidebar.
 2. Click **Add**.
-3. Place your subject near the origin and adjust the Lights, Target, Stage, or World as needed.
+3. Place your subject near the global origin (`0, 0, 0`) and adjust the **Lights**, **Target**, **Stage**, or **World** as needed.
 
 The default environment contains:
 
-- Four Area lights based on the classic QLE arrangement
-- A shared lighting Target
-- A C Backdrop Stage
-- A QLE World set to 5454 K at Strength 0.25
+- Four **Area** lights based on the classic QLE arrangement
+- A shared target named **Lights_Target**
+- A C-shaped backdrop called **C Stage**
+- A **QLE World** set to `5454 K` with **Strength** of `0.25`
 
-Clicking **Add** again repairs missing QLE parts without resetting existing adjustments.
+## Panel Controls
 
-## Main Actions
+### 🦐 Main Actions
 
-- **Add** creates QLE or restores required parts that are missing.
-- **Reset** restores the unprotected default lights, Target, Stage, and World. Added unprotected lights and their adjustments are removed. Confirmation is required.
-- **Clear** removes unprotected QLE content and restores the World that was active before QLE. Confirmation is required.
+- **Add** creates a new lighting collection. If you have deleted the **Stage**, **Lights_Target**, or any lights, clicking **Add** again will restore the missing components.
+- **Reset** reverts everything in the collection (except protected lights) back to factory settings. If you want a light to remain unaffected by **Reset**, click the **Protect** icon (padlock) next to its name.
+- **Clear** deletes the entire **QLE** collection (except for protected lights) and restores the previous **World**.
 
-Protected lights survive Reset and Clear.
+Again, protected lights survive **Reset** and **Clear**.
 
-## Adjustments
+### 🦐 Lights
 
-### Lights
+Each QLE light can be adjusted in the QLE panel, or by using the standard Blender panels and controls. Lights can be moved manually, and new coordinates will be updated in the QLE panel.
 
-Each QLE light can be renamed, selected, enabled or disabled, protected, reset, or deleted. You can also add more Area lights.
+The default setup includes four lights. Click the **Add Light** button to add as many more as you want.
 
-Light controls include:
+Each light gets its own sub-panel and set of controls. Most are obvious, but here are some notes.
 
-- Power
-- RGB or Kelvin color mode
-- Position around the light's Target
-- Target or Manual Aim
-- Area-light Shape and Size
+#### 🚡 Title Bar
+
+- **Name** (editable)
+- **Select** icon
+- **Protect** icon — Prevents the light from being reset or cleared by the **Main Actions** buttons.
+- **Hide/Disable** icon
+
+#### 🚡 Color Mode
+
+- **RGB** — Set the light color using the **Color** field.
+- **Kelvin** — Set the Blackbody value of the light, or select from a dropdown of common **Temperature** presets.
+- **RGB** and **Kelvin** remember their independent values when you switch between them.
 
 The four classic lights begin in RGB mode so their established appearance is preserved. Their preloaded Kelvin values are:
 
-| Light | Kelvin |
-| --- | ---: |
-| Area Right | 20000 K |
-| Area Left | 3800 K |
-| Area Fill | 5454 K |
-| Area Back | 5454 K |
+| Light          | HEX     | Kelvin  |
+| -------------- | ------- | ------: |
+| **Area_Left**  | `#FFC99D` | `3800 K`  |
+| **Area_Right** | `#ABC6FF` | `20,000 K` |
+| **Area_Fill**  | `#FFEDDD` | `5454 K`  |
+| **Area_Back**  | `#FFEDDD` | `5454 K`  |
+| **New Lights** | `#FFFFFF` | `6500 K`  |
 
-New lights begin as white RGB lights with 6500 K preloaded. RGB and Kelvin remember their values independently.
+#### 🚡 Position
 
-### Position and Aim
+- **Follow Target** — As you can see in the **Outliner**, all lights are parented to the **Lights_Target** by default. Disable this checkbox and the light will remain in its current position if the **Lights_Target** is moved.
+- **Around Target** — Moves the light around the `Z` axis of the **Lights_Target**.
 
-Position controls describe where a light sits around its Target. You can also move the light normally in the 3D Viewport; the controls update to match.
+#### 🚡 Aim
 
-**Follow Target** determines whether moving the Target also carries the light. **Aim** independently chooses automatic Target aiming or manual rotation.
+- Lights default to pointing at **Lights_Target**. Switch from **Target** to **Manual**, and you can point the light anywhere you want.
 
-### Target
+### 🦐 Target
 
-The shared Target can remain Free or follow another scene object. Choosing an object snaps the Target to that object's origin, while Position provides an editable offset.
+#### 🚡 Follow
 
-### Stage
+- **Free** — Position the **Lights_Target** anywhere in your scene.
+- **Object** — Set the **Lights_Target** to match and follow the same XYZ coordinates as any scene object.
+
+### 🦐 Stage
 
 Available Stage types are:
 
-- C Backdrop
-- L Backdrop
-- Flat Background
-- Floor
-- None
+- **C Stage**
+- **L Stage**
+- **Flat Background**
+- **Floor**
+- **None**
 
-Stage controls include Position, visibility, 17 Studio Colors, a Custom color, Reflective/Satin/Matte finishes, and Roughness. Switching Stage types preserves the current surface and visibility settings.
+#### 🚡 Surface
 
-The original C Backdrop keeps its legacy Diffuse material until you explicitly change Finish or Roughness. That edit converts the surface to Principled; Reset restores the original material.
+- Default **Stage** color is `#808080`.
+- Choose a color preset from the **Color** menu, or set a custom value using the **Custom** color picker.
+- **Finish** — Set the **Roughness** of the Stage material. Default roughness value is `1.0`.
 
-### World
+### 🦐 World
 
-The QLE World provides Strength plus independent RGB and Kelvin modes. Switching modes preserves the saved value in each mode, and Kelvin is not tinted by the saved RGB color.
+- The **QLE World** default color is set to `5454 K` at **Strength** `0.25`.
+- The World light intentionally evens out the backdrop and reduces very dark areas.
+- For a more traditional studio setup, reduce the **QLE World** **Strength** to `0` and increase the **Power** of the **Area_Fill** light.
 
-## Protecting Lights
-
-**Protect** keeps a managed light and its private Target outside the environment that Reset and Clear replace. Protected lights remain editable through QLE.
-
-**Reset Light** restores one light's default settings and position while preserving its name and protection state.
-
-## Existing QLE Scenes
-
-Click **Add** to adopt a recognizable QLE setup and add the persistent ownership information required by QLE 2.0. Existing light appearance and unrelated constraints are preserved where possible.
-
-Legacy QLE versions did not store the World that existed before QLE. If that history is unavailable, QLE reports it and creates a fallback World during Clear rather than guessing which World to restore.
-
-## Default Lighting Breakdown
-
-These renders isolate each part of the classic QLE setup so you can see what it contributes. They demonstrate the default lighting result rather than the current QLE 2.0 interface.
+## Default Lights
 
 ### All Lights
 
@@ -138,17 +133,9 @@ These renders isolate each part of the classic QLE setup so you can see what it 
 
 ![QLE Area Fill contribution](imx/QLE-05.jpg)
 
-## Lighting Notes
+## Note on Shadows
 
-- The World light intentionally evens out the backdrop and reduces very dark areas.
-- For a more traditional studio setup, reduce the QLE World Strength to `0` and increase Area Fill Power.
-- A simple mesh plane can work as a bounce card in front of the subject. Hide it from the Camera and glossy reflections if it should affect only the lighting.
-
-## Help and Project Information
-
-- Report a problem through [GitHub Issues](https://github.com/don1138/blender-qle/issues).
-- See [CHANGELOG.md](CHANGELOG.md) for release history.
-- QLE is available under the [GNU General Public License v3.0](LICENSE).
+You may want to angle some bounce cards on the ground in front of your model to lessen the bottom shadows. I use a basic mesh plane with `Properties > Object Properties > Visibility > Ray Visibility > Camera` and `Glossy` turned off.
 
 ## Mentions
 

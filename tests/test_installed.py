@@ -22,7 +22,7 @@ repo_dir.mkdir(exist_ok=True)
 repo = bpy.context.preferences.extensions.repos.new(
     name='QLE Isolated QA', module='qle_qa', custom_directory=str(repo_dir))
 result = bpy.ops.extensions.package_install_files(
-    filepath=str(ROOT / 'dist/quick_lighting_environment-2.0.8.zip'),
+    filepath=str(ROOT / 'dist/quick_lighting_environment-2.0.11.zip'),
     repo=repo.module, enable_on_install=True)
 assert result == {'FINISHED'}, result
 module_name = 'bl_ext.qle_qa.quick_lighting_environment'

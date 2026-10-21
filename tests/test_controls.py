@@ -43,7 +43,7 @@ class LayoutProbe:
     def prop_enum(self, owner, name, value, **kwargs):
         enum_items = getattr(owner.bl_rna.properties[name], 'enum_items', ())
         assert value in {item.identifier for item in enum_items}
-        self.calls.append(('prop_enum', name, value))
+        self.calls.append(('prop_enum', name))
 
     def operator(self, name, **kwargs):
         group, identifier = name.split('.')
@@ -371,6 +371,11 @@ class ControlsTests(unittest.TestCase):
         world.qle_color_mode = 'KELVIN'
         self.assertEqual(world.qle_kelvin, 3200)
         self.assertEqual(colors.background(world).inputs['Strength'].default_value, 0.25)
+        world.qle_color_mode = 'RGB'
+        world.qle_color_mode = 'KELVIN'
+        nodes = world.node_tree.nodes
+        self.assertEqual(len([node for node in nodes if node.type == 'BLACKBODY']), 1)
+        self.assertPoint(nodes['QLE Temperature'].location, (-400, 0))
 
     def test_temperature_presets_apply_to_light_and_world(self):
         self.add()
@@ -406,17 +411,23 @@ class ControlsTests(unittest.TestCase):
         self.assertTrue(backdrops.objects(self.scene)[0].hide_render)
         self.assertTrue(backdrops.objects(self.scene)[0].hide_viewport)
 
-    def test_legacy_diffuse_default_is_untouched_until_finish_edit_and_reset_restores_it(self):
+    def test_default_stage_uses_a_clean_principled_surface(self):
         self.add()
-        self.assertEqual(backdrops.surface_node(backdrops.material(self.scene)).type, 'BSDF_DIFFUSE')
+        mat = backdrops.material(self.scene)
+        node = backdrops.surface_node(mat)
+        self.assertEqual(node.type, 'BSDF_PRINCIPLED')
+        self.assertPoint(node.location, (-300, 0))
+        output = next(candidate for candidate in mat.node_tree.nodes if candidate.type == 'OUTPUT_MATERIAL')
+        self.assertPoint(output.location, (0, 0))
+        self.assertEqual(len(mat.node_tree.nodes), 2)
         original_color = backdrops.color(self.scene)
         backdrops.set_color(self.scene, (0.5, 0.2, 0.1, 1))
-        self.assertEqual(backdrops.surface_node(backdrops.material(self.scene)).type, 'BSDF_DIFFUSE')
+        self.assertEqual(backdrops.surface_node(backdrops.material(self.scene)), node)
         bpy.ops.qle.set_finish(finish='REFLECTIVE')
-        self.assertEqual(backdrops.surface_node(backdrops.material(self.scene)).type, 'BSDF_PRINCIPLED')
+        self.assertEqual(backdrops.surface_node(backdrops.material(self.scene)), node)
         self.assertAlmostEqual(backdrops.roughness(self.scene), 0.10, places=5)
         env.reset_environment(self.scene)
-        self.assertEqual(backdrops.surface_node(backdrops.material(self.scene)).type, 'BSDF_DIFFUSE')
+        self.assertEqual(backdrops.surface_node(backdrops.material(self.scene)).type, 'BSDF_PRINCIPLED')
         self.assertPoint(backdrops.color(self.scene)[:3], original_color[:3])
         self.assertAlmostEqual(backdrops.roughness(self.scene), 1.0, places=5)
 
@@ -555,7 +566,9 @@ class ControlsTests(unittest.TestCase):
         env.clear_environment(self.scene)
         PanelProbe(True).draw(bpy.context)
         light_controls.delete(self.scene, light)
-        PanelProbe(True).draw(bpy.context)
+        probe = PanelProbe(True)
+        probe.draw(bpy.context)
+        self.assertIn(('label', 'No lighting environment'), probe.layout.calls)
 
     def test_panel_blocks_controls_for_objects_shared_with_another_scene(self):
         self.add()

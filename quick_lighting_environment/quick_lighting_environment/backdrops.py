@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Stage selection and live surface controls, preserving legacy Diffuse defaults."""
+"""Stage selection and live Principled surface controls."""
 from pathlib import Path
 import bpy
 
@@ -7,6 +7,26 @@ from . import environment as env
 
 ASSETS = {'L_BACKDROP': 'L Backdrop', 'FLAT_BACKGROUND': 'Flat Background', 'FLOOR': 'Floor'}
 FINISHES = {'REFLECTIVE': 0.10, 'SATIN': 0.35, 'MATTE': 0.70}
+
+
+def configure_default_material(mat):
+    if mat is None:
+        raise env.QLEError('The packaged Stage asset has no material; reinstall QLE')
+    old = surface_node(mat)
+    old_color = tuple(old.inputs['Base Color' if old.type == 'BSDF_PRINCIPLED' else 'Color'].default_value) \
+        if old is not None else tuple(mat.diffuse_color)
+    mat.use_nodes = True
+    nodes = mat.node_tree.nodes
+    nodes.clear()
+    shader = nodes.new('ShaderNodeBsdfPrincipled')
+    shader.location = (-300, 0)
+    shader.inputs['Base Color'].default_value = old_color
+    shader.inputs['Roughness'].default_value = 1.0
+    output = nodes.new('ShaderNodeOutputMaterial')
+    output.location = (0, 0)
+    mat.node_tree.links.new(shader.outputs['BSDF'], output.inputs['Surface'])
+    mat.diffuse_color = old_color
+    mat.roughness = 1.0
 
 
 def objects(scene):
@@ -84,18 +104,21 @@ def set_color(scene, value):
 
 
 def set_roughness(scene, value):
-    old_color = color(scene)
     mat = editable_material(scene)
     node = surface_node(mat)
     if node is None:
         raise env.QLEError('This material has no directly editable Diffuse or Principled surface')
     if node.type == 'BSDF_DIFFUSE':
-        # Preserve the original Diffuse shader until the user intentionally
-        # requests a finish change. Reflective needs a reflecting shader.
-        output = next(node for node in mat.node_tree.nodes if node.type == 'OUTPUT_MATERIAL' and node.is_active_output)
+        old = node
+        old_color = tuple(old.inputs['Color'].default_value)
+        output = next(candidate for candidate in mat.node_tree.nodes
+                      if candidate.type == 'OUTPUT_MATERIAL' and candidate.is_active_output)
         node = mat.node_tree.nodes.new('ShaderNodeBsdfPrincipled')
+        node.location = (-300, 0)
         node.inputs['Base Color'].default_value = old_color
+        output.location = (0, 0)
         mat.node_tree.links.new(node.outputs['BSDF'], output.inputs['Surface'])
+        mat.node_tree.nodes.remove(old)
     node.inputs['Roughness'].default_value = value
     mat.roughness = value
 

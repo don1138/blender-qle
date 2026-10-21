@@ -314,6 +314,12 @@ def prepare_backdrop():
         if obj is not None:
             bpy.data.objects.remove(obj)
         raise QLEError('The packaged Stage asset is invalid (Backdrop is not a mesh); reinstall QLE')
+    from . import backdrops
+    try:
+        backdrops.configure_default_material(obj.active_material)
+    except Exception:
+        discard_backdrop(obj)
+        raise
     return obj
 
 
@@ -346,10 +352,14 @@ def configure_world(world):
     nodes = world.node_tree.nodes
     nodes.clear()
     background = nodes.new('ShaderNodeBackground')
+    background.location = (-200, 0)
     background.inputs['Strength'].default_value = 0.25
     blackbody = nodes.new('ShaderNodeBlackbody')
+    blackbody.name = 'QLE Temperature'
+    blackbody.location = (-400, 0)
     blackbody.inputs['Temperature'].default_value = 5454.0
     output = nodes.new('ShaderNodeOutputWorld')
+    output.location = (0, 0)
     world.node_tree.links.new(blackbody.outputs['Color'], background.inputs['Color'])
     world.node_tree.links.new(background.outputs['Background'], output.inputs['Surface'])
 

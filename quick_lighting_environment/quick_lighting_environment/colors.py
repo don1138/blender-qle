@@ -19,6 +19,24 @@ def blackbody(world):
                  if link.from_node.type == 'BLACKBODY'), None)
 
 
+def temperature_node(world):
+    nodes = world.node_tree.nodes
+    node = nodes.get('QLE Temperature')
+    if node is not None and node.type != 'BLACKBODY':
+        node.name = 'QLE Temperature (Unused)'
+        node = None
+    if node is None:
+        node = next((candidate for candidate in nodes if candidate.type == 'BLACKBODY'), None)
+    if node is None:
+        node = nodes.new('ShaderNodeBlackbody')
+    node.name = 'QLE Temperature'
+    node.location = (-400, 0)
+    for candidate in tuple(nodes):
+        if candidate != node and candidate.type == 'BLACKBODY' and not candidate.outputs['Color'].is_linked:
+            nodes.remove(candidate)
+    return node
+
+
 def get_mode(data):
     if isinstance(data, bpy.types.Light):
         return int(data.use_temperature)
@@ -81,10 +99,7 @@ def set_mode(data, value):
     for link in tuple(socket.links):
         data.node_tree.links.remove(link)
     if value:
-        temperature = data.node_tree.nodes.get('QLE Temperature')
-        if temperature is None or temperature.type != 'BLACKBODY':
-            temperature = data.node_tree.nodes.new('ShaderNodeBlackbody')
-            temperature.name = 'QLE Temperature'
+        temperature = temperature_node(data)
         temperature.inputs['Temperature'].default_value = data['_qle_kelvin']
         socket.default_value = (1, 1, 1, 1)
         data.node_tree.links.new(temperature.outputs['Color'], socket)

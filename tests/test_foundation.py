@@ -90,7 +90,12 @@ class FoundationTests(unittest.TestCase):
         self.assertEqual(self.scene.qle_settings.original_world, self.original)
         nodes = world.node_tree.nodes
         self.assertAlmostEqual(next(n for n in nodes if n.type == 'BACKGROUND').inputs['Strength'].default_value, 0.25)
-        self.assertAlmostEqual(next(n for n in nodes if n.type == 'BLACKBODY').inputs['Temperature'].default_value, 5454)
+        temperature = next(n for n in nodes if n.type == 'BLACKBODY')
+        self.assertEqual(temperature.name, 'QLE Temperature')
+        self.assertPoint(temperature.location, (-400, 0))
+        self.assertPoint(next(n for n in nodes if n.type == 'BACKGROUND').location, (-200, 0))
+        self.assertPoint(next(n for n in nodes if n.type == 'OUTPUT_WORLD').location, (0, 0))
+        self.assertAlmostEqual(temperature.inputs['Temperature'].default_value, 5454)
 
     def test_add_preserves_edits_names_extras_constraints_and_engine(self):
         self.add()

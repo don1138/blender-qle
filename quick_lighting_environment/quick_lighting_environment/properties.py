@@ -63,7 +63,7 @@ def register():
         name='Follow Target', description='Parent this light to its translation target, keeping its world transform',
         get=follow_get, set=follow_set))
     for name, label, component, options in (
-        ('qle_around', 'Around Subject', 0, {'subtype': 'ANGLE', 'soft_min': -pi, 'soft_max': pi}),
+        ('qle_around', 'Around Target', 0, {'subtype': 'ANGLE', 'soft_min': -pi, 'soft_max': pi}),
         ('qle_elevation', 'Elevation', 1, {'subtype': 'ANGLE', 'min': -pi / 2, 'max': pi / 2}),
         ('qle_distance', 'Distance', 2, {'subtype': 'DISTANCE', 'min': 0.0001, 'soft_max': 20}),
     ):

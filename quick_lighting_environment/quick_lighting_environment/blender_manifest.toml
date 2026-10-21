@@ -1,6 +1,6 @@
 schema_version = "1.0.0"
 id = "quick_lighting_environment"
-version = "2.0.8"
+version = "2.0.11"
 name = "QLE (Quick Lighting Environment)"
 tagline = "Adds a Basic Lighting Setup to Your Blender Scene"
 maintainer = "don1138 <don@sketchbookclub.com>"

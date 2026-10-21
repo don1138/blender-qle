@@ -1,16 +1,49 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""QLS Studio Colors, shared values and swatches; no QLS runtime dependency."""
+"""QLE Studio Colors, shared values and swatches."""
 from pathlib import Path
 import bpy.utils.previews
 from . import backdrops
 
-PRESETS = {'PURE_WHITE': ('Pure White', '#FFFFFF'), 'REAL_WHITE': ('Real White', '#E9E9E2'), 'WARM_WHITE': ('Warm White', '#F1E9DC'), 'LIGHT_GRAY': ('Light Gray', '#B8B8B5'), 'MIDDLE_GRAY': ('Middle Gray', '#808080'), 'DARK_GRAY': ('Dark Gray', '#3A3B3D'), 'CHARCOAL': ('Charcoal', '#1D2024'), 'REAL_BLACK': ('Real Black', '#16161D'), 'PURE_BLACK': ('Pure Black', '#000000'), 'WARM_GRAY': ('Warm Gray', '#9D9388'), 'SAND': ('Sand', '#CBB99F'), 'COOL_GRAY': ('Cool Gray', '#89949D'), 'SLATE_BLUE': ('Slate Blue', '#596C7C'), 'SAGE': ('Sage', '#8E9B87'), 'DUSTY_ROSE': ('Dusty Rose', '#B98F91'), 'CHROMA_GREEN': ('Chroma Green', '#00B140'), 'CHROMA_BLUE': ('Chroma Blue', '#0047BB')}
-GROUPS = (('Neutral', ('PURE_WHITE', 'REAL_WHITE', 'WARM_WHITE', 'LIGHT_GRAY', 'MIDDLE_GRAY', 'DARK_GRAY', 'CHARCOAL', 'REAL_BLACK', 'PURE_BLACK')), ('Warm', ('WARM_GRAY', 'SAND')), ('Cool', ('COOL_GRAY', 'SLATE_BLUE')), ('Color', ('SAGE', 'DUSTY_ROSE')), ('Utility', ('CHROMA_GREEN', 'CHROMA_BLUE')))
+PRESETS = {
+    'PURE_WHITE': ('Pure White', '#FFFFFF'),
+    'REAL_WHITE': ('Real White', '#E9E9E2'),
+    'LIGHT_GRAY': ('Light Gray', '#999999'),
+    'MIDDLE_GRAY': ('Middle Gray', '#666666'),
+    'DARK_GRAY': ('Dark Gray', '#333333'),
+    'CHARCOAL': ('Charcoal', '#1D2024'),
+    'REAL_BLACK': ('Real Black', '#16161D'),
+    'PURE_BLACK': ('Pure Black', '#000000'),
+    'WARM_WHITE': ('Warm White', '#FFFAF3'),
+    'WARM_LIGHT_GRAY': ('Warm Light Gray', '#A1988A'),
+    'WARM_MIDDLE_GRAY': ('Warm Middle Gray', '#6C655C'),
+    'WARM_DARK_GRAY': ('Warm Dark Gray', '#36332E'),
+    'SAND': ('Sand', '#CBB99F'),
+    'COOL_WHITE': ('Cool White', '#E7F1FF'),
+    'COOL_LIGHT_GRAY': ('Cool Light Gray', '#939BA0'),
+    'COOL_MIDDLE_GRAY': ('Cool Middle Gray', '#5F686E'),
+    'COOL_DARK_GRAY': ('Cool Dark Gray', '#2F3437'),
+    'SLATE_BLUE': ('Slate Blue', '#596C7C'),
+    'SAGE': ('Sage', '#8E9B87'),
+    'DUSTY_ROSE': ('Dusty Rose', '#B98F91'),
+    'CHROMA_GREEN': ('Chroma Green', '#00B140'),
+    'CHROMA_BLUE': ('Chroma Blue', '#0047BB'),
+}
+GROUPS = (
+    ('Neutral', ('PURE_WHITE', 'REAL_WHITE', 'LIGHT_GRAY', 'MIDDLE_GRAY',
+                 'DARK_GRAY', 'CHARCOAL', 'REAL_BLACK', 'PURE_BLACK')),
+    ('Warm', ('WARM_WHITE', 'WARM_LIGHT_GRAY', 'WARM_MIDDLE_GRAY',
+              'WARM_DARK_GRAY', 'SAND')),
+    ('Cool', ('COOL_WHITE', 'COOL_LIGHT_GRAY', 'COOL_MIDDLE_GRAY',
+              'COOL_DARK_GRAY', 'SLATE_BLUE')),
+    ('Color', ('SAGE', 'DUSTY_ROSE')),
+    ('Utility', ('CHROMA_GREEN', 'CHROMA_BLUE')),
+)
 _previews = None
 
 
 def value(preset):
     hex_value = PRESETS[preset][1].lstrip('#')
+
     def linear(channel):
         x = int(channel, 16) / 255
         return x / 12.92 if x <= 0.04045 else ((x + 0.055) / 1.055) ** 2.4
@@ -20,7 +53,7 @@ def value(preset):
 def active(scene):
     current = backdrops.color(scene)
     return next((name for name in PRESETS if all(abs(a-b) < 0.0001
-                 for a,b in zip(current, value(name)))), '')
+                 for a, b in zip(current, value(name)))), '')
 
 
 def label(scene):

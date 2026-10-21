@@ -13,14 +13,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Object-following target with automatic origin snapping and editable offset.
 - Exclusive RGB/Kelvin modes for lights and World, with separately remembered values and the 19 QLS temperature presets.
 - C/L/Flat Background/Floor/None backdrop choices, color and surface finish controls, and position/visibility controls.
+- Expanded Stage Studio Colors from 17 to 22 with matching Light, Middle, and Dark neutral, Warm, and Cool gray ranges.
 - Background Blender regression checks and rendered color checks in EEVEE and Cycles.
 
 ### Changed
 
 - Minimum Blender version is 4.5. The Scene Properties panel is replaced by the 3D Viewport sidebar panel.
-- Original QLE light and backdrop defaults are retained. Finish edits intentionally convert the legacy Diffuse surface to Principled; Reset restores the original material.
+- Original QLE light and backdrop colors are retained. Stage materials now use a clean Principled surface from the start, with consistently arranged material nodes.
+- Removed the redundant Adjustments wrapper, added spacing between major control sections, and added a guided empty state.
 
 ### Fixed
+
+- Prevented duplicate World Blackbody nodes when switching color modes and arranged the default World nodes for readability.
+- Renamed the light orbit control from Around Subject to Around Target.
+- Allowed replacement Stage meshes to inherit the current Principled material when their packaged assets contain no material.
 
 - Persistent scene-local ownership and World restoration replace name-based deletion and transient global state. Cleanup no longer runs a broad orphan purge.
 - Recognizable legacy setups can be adopted without resetting their appearance; missing original-World history is reported rather than guessed.

@@ -50,7 +50,7 @@ Quick Tools
         │   │   │       └── Kelvin [value K]
         │   │   ├── > Position
         │   │   │   ├── Follow Target [checked]
-        │   │   │   ├── Around Subject [angle]
+        │   │   │   ├── Around Target [angle]
         │   │   │   ├── Elevation [angle]
         │   │   │   └── Distance [value m]
         │   │   ├── > Aim
@@ -116,7 +116,7 @@ Only show the active color mode's fields. Square/Disk expose one Size; Rectangle
 
 ### Position and aim
 
-- Around Subject, Elevation, and Distance describe position relative to the lighting target. Orbit is movement around the target, not rotation of the lamp itself.
+- Around Target, Elevation, and Distance describe position relative to the lighting target. Orbit is movement around the target, not rotation of the lamp itself.
 - Follow Target defaults On: target translation carries the light while preserving relative placement.
 - Follow Target Off: target movement leaves the light's world position unchanged; the relative position fields reflect the new relationship.
 - Changing Follow Target must preserve the current light position.
@@ -158,7 +158,7 @@ Only show the active color mode's fields. Square/Disk expose one Size; Rectangle
 - None removes backdrop geometry and disables geometry-dependent controls. Selecting another type restores geometry with the retained surface settings.
 - Preserve original QLE geometry, material appearance, placement, and visibility as the factory backdrop defaults. Verify the legacy material before implementing reset; do not silently replace it with QLS's gray/matte default.
 - Finish shortcuts use QLS values: Reflective 0.10, Satin 0.35, Matte 0.70; Roughness remains editable.
-- The verified legacy material uses Diffuse at Roughness 1.0. Preserve it until an explicit Finish/Roughness edit switches the surface to Principled; Reset restores the legacy material.
+- Default Stage materials use Principled at Roughness 1.0 from creation. Legacy Diffuse materials adopted from older scenes convert cleanly when Finish/Roughness is edited.
 - Position and Select permit native viewport placement. Enabled affects viewport and render visibility.
 
 ## Approved work sequence
