@@ -30,7 +30,7 @@ The default environment contains:
 
 ## Panel Controls
 
-### 🦐 Main Actions
+### 1️⃣ Main Actions
 
 - **Add** creates a new lighting collection. If you have deleted the **Stage**, **Lights_Target**, or any lights, clicking **Add** again will restore the missing components.
 - **Reset** reverts everything in the collection (except protected lights) back to factory settings. If you want a light to remain unaffected by **Reset**, click the **Protect** icon (padlock) next to its name.
@@ -38,7 +38,7 @@ The default environment contains:
 
 Again, protected lights survive **Reset** and **Clear**.
 
-### 🦐 Lights
+### 2️⃣ Lights
 
 Each QLE light can be adjusted in the QLE panel, or by using the standard Blender panels and controls. Lights can be moved manually, and new coordinates will be updated in the QLE panel.
 
@@ -78,14 +78,14 @@ The four classic lights begin in RGB mode so their established appearance is pre
 
 - Lights default to pointing at **Lights_Target**. Switch from **Target** to **Manual**, and you can point the light anywhere you want.
 
-### 🦐 Target
+### 3️⃣ Target
 
 #### 🚡 Follow
 
 - **Free** — Position the **Lights_Target** anywhere in your scene.
 - **Object** — Set the **Lights_Target** to match and follow the same XYZ coordinates as any scene object.
 
-### 🦐 Stage
+### 4️⃣ Stage
 
 Available Stage types are:
 
@@ -101,7 +101,7 @@ Available Stage types are:
 - Choose a color preset from the **Color** menu, or set a custom value using the **Custom** color picker.
 - **Finish** — Set the **Roughness** of the Stage material. Default roughness value is `1.0`.
 
-### 🦐 World
+### 5️⃣ World
 
 - The **QLE World** default color is set to `5454 K` at **Strength** `0.25`.
 - The World light intentionally evens out the backdrop and reduces very dark areas.
